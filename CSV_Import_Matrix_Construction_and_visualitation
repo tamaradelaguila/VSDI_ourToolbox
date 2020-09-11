@@ -1,0 +1,83 @@
+clear all
+clc
+
+
+
+%% NOMBRE DEL ARCHIVO EN CSV Y ASIGNACIÓN DE NOMBRE DE VARIABLE
+
+ROI= ' Nombre_del_archivo_de_la_ROI_extraida.csv ' ;
+
+ArchivoCSV= ' Nombre_del_archivo_experimental-waveEach.csv ' ;
+
+
+
+%% EXTRACCIÓN DEL TAMAÑO DE LA ROI
+
+% Lo primero es extraer el tamaño de la ROI que hemos utilizado, en este
+% flujo está por defecto la ROI de cerebro completo (telencefalo+techo) pero podría utilizarse
+% cualquier ROI que hayamos creado. El codigo de abajo extraerá el tamaño
+% de la ROI utilizada a partir del archivo csv de la ROI. De esta forma extraemos 
+las filas (m) y las columnas (n) de nuestra ROI
+
+CSVData= csvread(ROI);
+
+m=CSVData(6,1)-CSVData(5,1);
+
+n=CSVData(5,2)-CSVData(4,2);
+
+%% EXTRAER FRAMES, VECTOR TIEMPO Y SAMPLING RATE
+
+% Para extraer de manera automática el Sampling Rate necesitamos los
+% valores de tiempo total y dividirlos entre el numero de frames totales
+% menos 1. Para ello tenemos  los datos de la ROI
+
+Frames= csvread(ArchivoCSV,1,1,[1 1 1 1]);
+
+
+
+% Para extraer los valores del vector tiempo
+
+Time= csvread(ArchivoCSV,8,0);
+
+Time=Time(:,1);
+
+Time=Time';
+
+% Para extraer el sampling rate simplemente hay que dividir el total de
+% segundos, o lo que los mismo, el valor maximo de nuestro vector tiempo,
+% entre el total de frames menos 1
+
+SamplingRate=(max(Time))/(Frames-1);
+
+SamplingFrequency=1000/SamplingRate;
+
+
+
+%% AVERGES REALIZADOS
+
+Averages= csvread(ArchivoCSV,2,1,[2 1 2 1]);
+
+
+%% LECTURA DE LOS DATOS DE LA ROI
+
+CSVData= csvread(ArchivoCSV,7,1);
+
+%% CREACIÓN DE LA MATRIZ 3D Y VISUALIZACIÓN DEL BACKGROUND
+
+RawData=zeros(m,n,Frames+1);
+for fj=1:m ; 
+     J=-n+n*fj;
+    for fi=1:n;
+        RawData(fj,fi,:)=CSVData(:,fi+J);
+    end
+end
+
+RawData=permute(RawData,[2 1 3]);
+
+BackgroundPage1= RawData(:,:,1);
+
+% Para comprobar que se ha construido correctamente se puede visualizar la
+% imagen de background
+
+figure(1)
+imagesc(BackgroundPage1); colormap('gray')
