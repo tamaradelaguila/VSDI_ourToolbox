@@ -3,7 +3,7 @@ Siempre ejecuta los scripts desde la 'rootpath'
 
 Rootpath contiene: 
 - scripts de matlab
-- script de python de importación en matlab de '.dml'
+- script de python de importaciÃ³n en matlab de '.dml'
 - 'user_settings.m'
 - 'grouplist' (que se crea en c00_first_steps'
 - carpetas: 
@@ -11,11 +11,10 @@ Rootpath contiene:
     '
 Antes de nada, para cada ordenador:
 ajustar en 'user_settings.m': 'rootpath'
-ajustar en 'ref_settings.m': 'rootpath', 'expref'
 
-EXTRACCIÓN DATOS 'dml' (desde python) ------
+EXTRACCIÃ“N DATOS 'dml' (desde python) ------
 
 PIPELINE MATLAB: 
 
-c00_first_steps
-c01_import_movies_preprocess
+s00_first_steps
+s01_import_movies_preprocess
