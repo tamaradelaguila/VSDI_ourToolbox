@@ -1,17 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun Nov  1 16:46:26 2020
+https://github.com/zivadinac/micam_data_extraction.git
 
-@author: User
+@author: Predrag Zivadinac
 """
 
-
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Oct  8 14:37:00 2020
-
-@author: User
-"""
 
 from argparse import ArgumentParser
 import pickle
