@@ -3,7 +3,7 @@ Siempre ejecuta los scripts desde la 'rootpath'
 
 Rootpath contiene: 
 - scripts de matlab
-- script de python de importaciÃ³n en matlab de '.dml'
+- script de python de importación en matlab de '.dml'
 - 'user_settings.m'
 - 'grouplist' (que se crea en c00_first_steps'
 - carpetas: 
@@ -11,10 +11,51 @@ Rootpath contiene:
     '
 Antes de nada, para cada ordenador:
 ajustar en 'user_settings.m': 'rootpath'
+ajustar en 'ref_settings.m': 'rootpath', 'expref'
 
-EXTRACCIÃ“N DATOS 'dml' (desde python) ------
+EXTRACCIÓN DATOS 'dml' (desde python) ------
 
 PIPELINE MATLAB: 
 
-s00_first_steps
-s01_import_movies_preprocess
+c00_first_steps
+c01_importmov_basic_preprocess
+c02_define_rois
+c03_preprocess_filters
+c04_visualise
+c05_analisis1_frame_comparison
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+VSDI structure fields: 
+
+[Defined in: s00_preparatory steps]
+VSDI.ref, reference of BV (date)
+VSDI.list, imported from BrainVision Vizualizer .csv
+VSDI.trialref, copied from VSDI.list.Name
+VSDI.condition, from manually labeled conditions ()
+VSDI.info
+        .stime (sampling time)
+        .Sonset(ms, when the stimmulus comes)
+        .Sdurat (column with duration of stimulus for each trial)
+VSDI.nonanidx, idx with non-NaN condition label (that is, included in the analysis)
+
+[Defined in: s01_import_basic_preprocess]
+VSDI.timeabs: ms (respect to the beginning of recording)
+VSDI.timebase:  (respect to the Sonset);
+VSDI.backgr: reference image used for registering
+VSDI.cropmask: mask to leave background out
+
+[Defined in: s02_ROIdefinition]
+VSDI.roi.labels
+VSDI.roi.poly
+VSDI.roi.roimask
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+MOVIE STRUCTURES FIELDS 
+
+
+MOVIES' REFERENCES
+'_00raw' : raw movies from python
+'_01registered' :registered (aligned) trials respect the first frame of first included trial
+'_02diff' : differential values
+'_03crop' : cropped background
+'_04filter1', etc (different preprocessing steps)
