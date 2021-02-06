@@ -12,9 +12,12 @@ function [output] = ROSmapa(action, object, objectref)
 
 %  [VSDmov]= ROSmapa('loadmovie', nfish, moviereference) - uses moviereference
 
-rootpath = 'C:\Users\User\Documents\UGent_brugge\lab_maps'; 
-VSDIpath = fullfile(rootpath,'dataVSDI');
-moviepath = fullfile(rootpath,'datamovies');
+rootpath = 'C:\Users\User\Documents\UGent_brugge\VSDI_ourToolbox_tamara\rootpath';
+datapath = 'C:\Users\User\Documents\UGent_brugge\VSDI_ourToolbox_tamara\ROSmapa_data';
+
+VSDIpath = fullfile(datapath,'dataVSDI');
+moviepath = fullfile(datapath,'datamovies');
+wavespath = fullfile(datapath,'datawaves');
 
 expref = 'ROSmapa';
 
@@ -32,7 +35,7 @@ switch action
             warning('fish cannot be load because "grouplist.mat" does not exist')
         end
         
-          case 'savemovie'
+     case 'savemovie'
             if ~exist('objectref') 
                 error('input a proper reference name for the movie (as 3rd argument)'); end
 end % input control
@@ -58,7 +61,7 @@ switch action
        pathname = fullfile(moviepath,['ROSmapaMov_',num2str(VSDmov.ref),objectref,'.mat']);
        save(pathname,'VSDmov')
 
-       case 'loadmovie' 
+    case 'loadmovie' 
        load(fullfile(rootpath, 'grouplist'))
        fishref = grouplist{object}(9:end);
        %saveVSDI saves current VSDI structure respect to the current rootpath
@@ -67,6 +70,18 @@ switch action
        output= VSDmov;       
        disp([movieref, '_loaded']);
 
+    case 'savewave'
+        VSDroiTS = object; 
+        %saveVSDI saves current VSDI structure respect to the current rootpath
+        pathname = fullfile(wavespath,[expref 'RoiTS_' num2str(object.ref) '.mat']);
+        save(pathname, 'VSDroiTS')
+
+    case 'loadwave'
+        fishref = grouplist{object}(9:end);
+        load(fullfile(rootpath, 'grouplist')) %load structure list to take the fish reference
+        load(fullfile(wavespath,[expref 'RoiTS_',fishref,'.mat'])) %load the fish VSDI
+        disp(strcat ('ROIs timeseries for fish',grouplist{object}, '_loaded'));
+        output= VSDroiTS;
 
         
 end %switch
