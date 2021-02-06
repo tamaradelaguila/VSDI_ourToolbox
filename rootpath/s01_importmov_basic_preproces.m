@@ -7,6 +7,7 @@
 user_settings
 
 nfish = 1; %@ SET
+[VSDI] = ROSmapa('load',nfish);
 
 %% PYTHON dml extraction
 % adjust paths in '00automatic_extraction.py) and execute
@@ -15,7 +16,6 @@ nfish = 1; %@ SET
 % folder with all movies extracted with python
 py_output = 'C:\Users\User\Documents\UGent_brugge\lab_maps\BVdml\output'; %where matfiles have been output from python %@ SET
 
-[VSDI] = ROSmapa('load',nfish);
 [movies4D, times] = assemble4Draw(VSDI,py_output,VSDI.info.stime);
 movieref = '_00raw';
 
@@ -83,11 +83,14 @@ baseframe = 1; % @SET! idx of frames to use as F0 in differential formula
     baseltext = strcat(num2str(baseframe(1)),'to',num2str(baseframe(end)));
 
 % Preallocate in NaN 
-diffmovie = NaN(size(inputdata));
+inputdim = size(inputdata); 
+diffmovie = NaN(inputdim(1),inputdim(2),inputdim(3)+1,inputdim(4));
 
-for triali = VSDI.nonanidx
+for triali = makeRow(VSDI.nonanidx) %import only included trials
     inputmovie = squeeze(inputdata(:,:,:,triali));
-    diffmovie(:,:,:,triali) = raw2diffperc2(inputmovie, baseframe); 
+    diffmovie(:,:,:,triali) = raw2diffperc2(inputmovie, baseframe);
+    
+    VSDI.backgr(:,:,triali) = diffmovie(:,:,end,triali); % store background
 end
     
 % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
@@ -100,10 +103,34 @@ VSDmov.hist = inputStruct.hist;
 VSDmov.hist{1,size(inputStruct.hist,1)+1} = strcat('%diff basel_idx=',baseltext); %append a new cell with new info
 ROSmapa('savemovie', VSDmov, VSDmov.movieref); 
 
-% SUGGESTION: if different F0 are ,keep the basic reference and add info about the F0, e.g. outputRef = '_02diffbase10';
+ROSmapa('save', VSDI); 
+
+% SUGGESTION: if different F0 are ,keep the basic reference + info about the F0, e.g. outputRef = '_02diffbase10';
 
 %% 03 - MASKED MOVIES
 
 % MAKE MASK FROM REFERENCE FRAME AND SAVE IN VSDI
 
+% Crop mask:
+[crop_poly, crop_mask] = roi_draw(VSDI.backgr(:,:,VSDI.nonanidx(1)));
+
+% View the result
+polygon_preview(VSDI.backgr(:,:,setn), crop_poly{setn, 1}); 
+
+% polygon_preview(VSDI.backgr(:,:,1), VSDI.crop.poly{1,1}); 
+
+% save in structure
+VSDI.crop.mask(:,:,setn) = crop_mask; 
+VSDI.crop.poly {setn,1} = crop_poly{1}; %stored in rows
+
+
+
+% 1. REFERENCES for input/output movies
+inputRef =  '_01registered'; 
+outputRef = '_02diff';
+
+inputStruct = ROSmapa('loadmovie', nfish, inputRef);
+
+
+% 2. PERFORM COMPUTATIONS: %DIFFERENTIAL VALUES
 

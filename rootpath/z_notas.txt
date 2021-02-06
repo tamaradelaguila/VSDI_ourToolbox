@@ -64,9 +64,11 @@ VSDI.roi.roimask
 5. MOVIES' REFERENCES
 '_00raw' : raw movies from python
 '_01registered' :registered (aligned) trials respect the first frame of first included trial
-'_02diff' : differential values
+'_02diff' : differential values 
 '_03crop' : cropped background
 '_04filter1', etc (different preprocessing steps)
+
+From '_02diff' on, the background is stored in raw values in the last frame
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 6. CÓMO CREAR filelist.CSV
