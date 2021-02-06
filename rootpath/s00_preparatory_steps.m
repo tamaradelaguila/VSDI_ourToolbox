@@ -21,11 +21,11 @@ save(fullfile(rootpath,'grouplist.mat'),'grouplist');
 
 
 %% 2. CREATE VSDI structure (FOR EACH FISH) 
-VSDI.ref = 200611 ;
-VSDI.info.stime = 6; %ms (sampling time)
+VSDI.ref = 200611 ; %@ SET
+VSDI.info.stime = 6; %ms (sampling time) @ SET
 
 % IMPORT LIST. Have to be saved from Brainvision. See notes for details 
-listpath =  'C:\Users\User\Documents\UGent_brugge\lab_maps\BVdml'; %set
+listpath =  'C:\Users\User\Documents\UGent_brugge\lab_maps\BVdml'; %@ SET
 listpath = fullfile(listpath,strcat('filelist',num2str(VSDI.ref),'.csv'));
 
 list_table=  readtable(listpath);
@@ -35,10 +35,11 @@ VSDI.trialref(triali,1) = str2num(VSDI.list(triali).Name(1:end-5)); %save refere
 end
 ROSmapa('save',VSDI);
 
+%@ SET
 % ADD MANUALLY THE CONDITION FOR EACH TRIAL (in new fields -name them to be able to copy them)...
 % Non-included trials: NaN
 
-%AND THEN COPY IT INTO A NEW 'condition' FIELD
+%AND THEN COPY IT INTO NEW FIELDS
 for triali = 1:length(VSDI.list)
 VSDI.condition(triali,1) = VSDI.list(triali).c1; %set the name of the field so it c an be c opied
 VSDI.condition(triali,2) = VSDI.list(triali).c2;
@@ -46,8 +47,9 @@ end
 
 VSDI.nonanidx= find(~isnan(VSDI.condition(:,1))) ;
 
-VSDI.info.Sonset = 300; % ms (from start of recording)
-VSDI.info.Sdur = []; % ms(duration of stimulus)
+% SET MORE PARAMETERS
+VSDI.info.Sonset = 300; % ms (from start of recording) %@ SET
+VSDI.info.Sdur = []; % ms(duration of stimulus) %@ SET
 
 % Save changes
 ROSmapa('save',VSDI);
@@ -55,4 +57,3 @@ ROSmapa('save',VSDI);
 % test saving
 clear
 [VSDI] = ROSmapa('load',1);
-

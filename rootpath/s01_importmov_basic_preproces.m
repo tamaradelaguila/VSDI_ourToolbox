@@ -6,14 +6,14 @@
 
 user_settings
 
-nfish = 1;
+nfish = 1; %@ SET
 
 %% PYTHON dml extraction
 % adjust paths in '00automatic_extraction.py) and execute
 
 %% 00 - IMPORT RAW MOVIE (from python-extracted matfiles) MATFILES 
 % folder with all movies extracted with python
-py_output = 'C:\Users\User\Documents\UGent_brugge\lab_maps\BVdml\output'; %where matfiles have been output from python
+py_output = 'C:\Users\User\Documents\UGent_brugge\lab_maps\BVdml\output'; %where matfiles have been output from python %@ SET
 
 [VSDI] = ROSmapa('load',nfish);
 [movies4D, times] = assemble4Draw(VSDI,py_output,VSDI.info.stime);
@@ -24,7 +24,7 @@ VSDmov.ref = VSDI.ref;
 VSDmov.movieref= movieref;
 VSDmov.data = movies4D;
 VSDmov.times = times;
-VSDmov.hist{1} = 'raw: py-imported + assemble4Dmovies';
+VSDmov.hist{1} = 'raw: py-imported + assemble4Dmovies'; 
 ROSmapa('savemovie', VSDmov, movieref); 
 
 % [Save times  in VSDI]
@@ -37,9 +37,10 @@ VSDmov = ROSmapa('loadmovie',nfish,movieref);
 
 %% 01 - BRAIN ALINEATION THROUGH TRIALS
 
-% 1. REFERENCES for input/output movies
-inputRef =  '_00raw';
-outputRef = '_01registered';
+% 1. REFERENCES for input/output movies (see 'z_notes.txt', point 5 for
+% complete list)
+inputRef =  '_00raw'; 
+outputRef = '_01registered'; 
 
 %load input movie (non-aligned raw)
 [inputStruct] = ROSmapa('loadmovie',nfish,inputRef); 
@@ -67,7 +68,7 @@ clear inputStruct
 %% 02 - DIFFERENTIAL VALUES
 
 % 1. REFERENCES for input/output movies
-inputRef =  '_01registered';
+inputRef =  '_01registered'; 
 outputRef = '_02diff';
 
 inputStruct = ROSmapa('loadmovie', nfish, inputRef);
@@ -77,7 +78,7 @@ inputStruct = ROSmapa('loadmovie', nfish, inputRef);
 
 inputdata = inputStruct.data;
 
-baseframe = 1:10; % @SET! idx of frames to use as F0 in differential formula
+baseframe = 1; % @SET! idx of frames to use as F0 in differential formula
 % Turn into string to save later in History:
     baseltext = strcat(num2str(baseframe(1)),'to',num2str(baseframe(end)));
 
@@ -96,7 +97,7 @@ VSDmov.movieref= outputRef;
 VSDmov.data = diffmovie;
 VSDmov.times = inputStruct.times;
 VSDmov.hist = inputStruct.hist;
-VSDmov.hist{1,size(inputStruct.hist,1)+1} = strcat('%diff basel idx=',baseltext); %append a new cell with new info
+VSDmov.hist{1,size(inputStruct.hist,1)+1} = strcat('%diff basel_idx=',baseltext); %append a new cell with new info
 ROSmapa('savemovie', VSDmov, VSDmov.movieref); 
 
 % SUGGESTION: if different F0 are ,keep the basic reference and add info about the F0, e.g. outputRef = '_02diffbase10';

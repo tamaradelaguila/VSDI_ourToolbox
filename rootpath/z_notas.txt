@@ -1,31 +1,39 @@
 NOTAS PRELIMINARES ------
-Siempre ejecuta los scripts desde la 'rootpath'
 
-Rootpath contiene: 
+EJecutar siempre los scripts desde la 'rootpath'
+
+La 'rootpath' debe contener: 
 - scripts de matlab
 - script de python de importación en matlab de '.dml'
 - 'user_settings.m'
-- 'grouplist' (que se crea en c00_first_steps'
+- 'grouplist' (que se crea en c00_first_steps')
 - carpetas: 
     'functions'
-    '
-Antes de nada, para cada ordenador:
-ajustar en 'user_settings.m': 'rootpath'
-ajustar en 'ref_settings.m': 'rootpath', 'expref'
-
-EXTRACCIÓN DATOS 'dml' (desde python) ------
-
-PIPELINE MATLAB: 
-
-c00_first_steps
-c01_importmov_basic_preprocess
-c02_define_rois
-c03_preprocess_filters
-c04_visualise
-c05_analisis1_frame_comparison
+    'dataVSDI', 'datamovies'
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-VSDI structure fields: 
+1. PASOS PREVIOS
+Antes de nada, para cada ordenador:
+- Ajustar en 'user_settings.m': 'rootpath'
+- Crear 'filelist#ref.csv' desde Brainvision (ver punto 6 abajo)
+
+(antes de usar el código de python para la extracción automática)
+- En EXTRACCIÓN DATOS 'dml' (desde python): Ajustar las carpetas raíz, de entrada y de salida.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+2. PIPELINE MATLAB: 
+
+s00_first_steps
+s00_automatic_extraction (python)*
+s01_importmov_basic_preprocess
+s02_define_rois
+s03_preprocess_filters
+s04_visualise
+s05_analisis1_frame_comparison
+
+*puede ejecutarse antes o después de s00.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+3. VSDI structure fields: 
 
 [Defined in: s00_preparatory steps]
 VSDI.ref, reference of BV (date)
@@ -50,12 +58,31 @@ VSDI.roi.poly
 VSDI.roi.roimask
 
 &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-MOVIE STRUCTURES FIELDS 
+4. MOVIE STRUCTURES FIELDS 
 
-
-MOVIES' REFERENCES
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+5. MOVIES' REFERENCES
 '_00raw' : raw movies from python
 '_01registered' :registered (aligned) trials respect the first frame of first included trial
 '_02diff' : differential values
 '_03crop' : cropped background
 '_04filter1', etc (different preprocessing steps)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+6. CÓMO CREAR filelist.CSV
+Poner todos los archivos '.dml' del experimento en una carpeta, que no contenga nada más.
+Desde BrainVision, en el panel 'FileList' pulsar el botón 'BV Viewer'
+Desde el visor que se abre: File > 'Export data list with CSV format'.
+Nombrar con el nombre de referencia de BrainVision (fecha en formato AAMMDD) de la siguiente manera :
+ 'filelist######.csv' (e.g. filelist200611). 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+7. REFERENCIA PARA CADA PEZ
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+8. REFERENCIA PARA CADA EXPERIMENTO
+Cada experimento tendrá una referencia con la que se guardarán las estructuras de todos los sujetos. 
+Para manejar los datos de cada experimento, hay que usar la función propia. 
+Por ejemplo: 
+    ROSmapa.m >>> guarda las estructuras como ROSmapa_######.mat, siendo ###### la ref del sujeto
