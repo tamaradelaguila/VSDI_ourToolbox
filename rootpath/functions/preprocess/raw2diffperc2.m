@@ -21,10 +21,10 @@ selframes = raw3Dmatrix(:,:,baseframes);
 F0 = mean(selframes,3);
 
 % Compute 100*(F-F0)/F0 for each value
-diffpdata = zeros(size(rawmatrix));
+diffpdata = zeros(imdim1,imdim2,n_frames+1);
 
 for framei= 1:n_frames
-    diffpdata(:,:,framei)= ( 100*(data3D(:,:,framei)-F0) )./F0;       
+    diffpdata(:,:,framei)= ( 100*(raw3Dmatrix(:,:,framei)-F0) )./F0;       
 end
 
 % Invert Sign
