@@ -84,20 +84,20 @@ baseframe = 1; % @SET! idx of frames to use as F0 in differential formula
 
 % Preallocate in NaN 
 inputdim = size(inputdata); 
-diffmovie = NaN(inputdim(1),inputdim(2),inputdim(3)+1,inputdim(4));
+diffmovies = NaN(inputdim(1),inputdim(2),inputdim(3)+1,inputdim(4));
 
 for triali = makeRow(VSDI.nonanidx) %import only included trials
     inputmovie = squeeze(inputdata(:,:,:,triali));
-    diffmovie(:,:,:,triali) = raw2diffperc2(inputmovie, baseframe);
+    diffmovies(:,:,:,triali) = raw2diffperc2(inputmovie, baseframe);
     
-    VSDI.backgr(:,:,triali) = diffmovie(:,:,end,triali); % store background
+    VSDI.backgr(:,:,triali) = diffmovies(:,:,end,triali); % store background
 end
     
 % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
 % structure used to apply new changes in
 VSDmov.ref = inputStruct.ref;
 VSDmov.movieref= outputRef;
-VSDmov.data = diffmovie;
+VSDmov.data = diffmovies;
 VSDmov.times = inputStruct.times;
 VSDmov.hist = inputStruct.hist;
 VSDmov.hist{1,size(inputStruct.hist,1)+1} = strcat('%diff basel_idx=',baseltext); %append a new cell with new info
@@ -109,28 +109,58 @@ ROSmapa('save', VSDI);
 
 %% 03 - MASKED MOVIES
 
-% MAKE MASK FROM REFERENCE FRAME AND SAVE IN VSDI
+% % MAKE MASK FROM REFERENCE FRAME AND SAVE IN VSDI
+ref_frame = VSDI.backgr(:,:,VSDI.nonanidx(1)); %the background from the first included trial
 
-% Crop mask:
-[crop_poly, crop_mask] = roi_draw(VSDI.backgr(:,:,VSDI.nonanidx(1)));
+%  Before cropping: check all backgrounds to take into account if there is
+%  much movements (and, for instance, leave out of the mask the margins)
+for triali = makeRow(VSDI.nonanidx)
+imagesc(VSDI.backgr(:,:,triali)); colormap('bone');
+title(strcat('trial=',num2str(triali)))
+    pause %to advance to the next frame, press any key; to skip to the end, press 'Ctrl+C'
+end
 
-% View the result
-polygon_preview(VSDI.backgr(:,:,setn), crop_poly{setn, 1}); 
+% DRAW & SAVE CROPMASK:
+[crop_poly, crop_mask] = roi_draw(ref_frame);
+
+% View the result on a selected trial
+trialsel = 2; %@ SET (if you want to check any specific frame)
+roi_preview(VSDI.backgr(:,:,trialsel), crop_poly{1}); 
 
 % polygon_preview(VSDI.backgr(:,:,1), VSDI.crop.poly{1,1}); 
 
-% save in structure
-VSDI.crop.mask(:,:,setn) = crop_mask; 
-VSDI.crop.poly {setn,1} = crop_poly{1}; %stored in rows
-
-
+% SAVE in structure
+VSDI.crop.mask = crop_mask; 
+VSDI.crop.poly = crop_poly{1}; %stored in rows
 
 % 1. REFERENCES for input/output movies
-inputRef =  '_01registered'; 
-outputRef = '_02diff';
+inputRef =  '_02diff'; 
+outputRef = '_03crop';
 
 inputStruct = ROSmapa('loadmovie', nfish, inputRef);
+inputdata = inputStruct.data;
 
+% 2. PERFORM COMPUTATIONS: APPLY MASK
 
-% 2. PERFORM COMPUTATIONS: %DIFFERENTIAL VALUES
+cropmovies = NaN (size(inputdata));
+%initialize
+for triali = makeRow(VSDI.nonanidx)
+inputmovie = squeeze(inputdata(:,:,:,triali));
+cropmovies(:,:,:,triali)= roi_crop(inputmovie, VSDI.crop.mask);
+end
 
+% save one cropped image to help in drawing the ROI
+VSDI.crop.preview = cropmovies(:,:,end,VSDI.nonanidx(1)); 
+ROSmapa('save', VSDI);
+
+% 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
+% structure used to apply new changes in
+VSDmov.ref = inputStruct.ref;
+VSDmov.movieref= outputRef;
+VSDmov.data = cropmovies;
+VSDmov.times = inputStruct.times;
+VSDmov.hist = inputStruct.hist;
+VSDmov.hist{1,size(inputStruct.hist,1)+1} = 'crop_backgr'; %append a new cell with new info
+ROSmapa('savemovie', VSDmov, VSDmov.movieref); 
+
+ROSmapa('save', VSDI); 

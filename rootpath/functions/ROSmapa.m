@@ -12,8 +12,8 @@ function [output] = ROSmapa(action, object, objectref)
 
 %  [VSDmov]= ROSmapa('loadmovie', nfish, moviereference) - uses moviereference
 
-rootpath = 'C:\Users\User\Documents\UGent_brugge\VSDI_ourToolbox_tamara\rootpath';
-datapath = 'C:\Users\User\Documents\UGent_brugge\VSDI_ourToolbox_tamara\ROSmapa_data';
+rootpath = 'C:\Users\User\Documents\UGent_brugge\VSDI_tamaraToolbox\VSDI_ourToolbox\rootpath';
+datapath = 'C:\Users\User\Documents\UGent_brugge\VSDI_tamaraToolbox\ROSmapa_data';
 
 VSDIpath = fullfile(datapath,'dataVSDI');
 moviepath = fullfile(datapath,'datamovies');
@@ -77,8 +77,8 @@ switch action
         save(pathname, 'VSDroiTS')
 
     case 'loadwave'
-        fishref = grouplist{object}(9:end);
         load(fullfile(rootpath, 'grouplist')) %load structure list to take the fish reference
+        fishref = grouplist{object}(9:end);
         load(fullfile(wavespath,[expref 'RoiTS_',fishref,'.mat'])) %load the fish VSDI
         disp(strcat ('ROIs timeseries for fish',grouplist{object}, '_loaded'));
         output= VSDroiTS;

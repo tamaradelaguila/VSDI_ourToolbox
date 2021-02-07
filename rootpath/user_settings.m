@@ -1,4 +1,4 @@
 
-rootpath = 'D:\Académico\DOCTORADO_FPU\Laboratorio\2021\Registro óptico\VSDI_ourToolbox\rootpath';
+rootpath = 'C:\Users\User\Documents\UGent_brugge\VSDI_tamaraToolbox\VSDI_ourToolbox\rootpath';
 
 addpath(genpath(fullfile(rootpath, 'functions')));
