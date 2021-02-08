@@ -13,6 +13,7 @@ outwave = zeros(1, Nframes); % vector of length the nº of frames in data (Y)
 for frame=1:Nframes
 
         ROIvalues = Y(:,:,frame).*roimask;
+        ROIvalues = fillmissing(ROIvalues,'constant', 0); 
         outwave(frame) = sum(ROIvalues(:))/sum(roimask(:)); %sum(ROImask) gives the number of pixels included in the ROI
 end
 

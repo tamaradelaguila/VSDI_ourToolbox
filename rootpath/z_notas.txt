@@ -8,11 +8,11 @@ La 'rootpath' con el código de la toolbox debe contener:
 - script de python de importación en matlab de '.dml'
 - 'user_settings.m'
 - 'functions/functions_settings.m'
-- 'grouplist' (que se crea en c00_first_steps')
 - carpetas: 
     'functions'
 
 La carpeta de datos debe contener:
+- 'grouplist' (que se crea en c00_first_steps')
 - 'dataVSDI' - para las estructuras de pez
 - 'datamovies' - para las estructuras de películas
 - 'datawaves' - para las estructuras de timeseries de roi
@@ -22,7 +22,7 @@ La carpeta de datos debe contener:
 1. PASOS PREVIOS
 Antes de nada, para cada ordenador:
 - Ajustar en la función del experimento (e.g.'ROSmapa.m'): 'rootpath'
-- Ajustar en 'user_settings.m': 'rootpath'
+- Ajustar en 'user_settings.m': 'path.rootpath', 'path.data'
 - Ajustar en 'functions/functions_settings.m': 'datapath'
 - Crear 'filelist#ref.csv' desde Brainvision (ver punto 6 abajo)
 
@@ -75,6 +75,7 @@ VSDI.roi.roimask
 '_01registered' :registered (aligned) trials respect the first frame of first included trial
 '_02diff' : differential values 
 '_03crop' : cropped background
+
 '_04filter1', etc (different preprocessing steps)
 '
 

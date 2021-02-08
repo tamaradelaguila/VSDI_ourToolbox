@@ -1,5 +1,9 @@
 %% s03 DEFINE ROIS
 % Draw ROIs from brain areas.
+clear 
+user_settings
+nfish = 1;
+VSDI = ROSmapa('load',1);
 
 % Draw ROIs and store in structure
 VSDI.roi.labels = {'dm4_R', 'dm4_L',...

@@ -19,18 +19,18 @@ fieldref = strcat(inputRef(4:end),inputRef(2:3));
 movies=inputStruct.data;
 
 % 2. PERFORM COMPUTATIONS:  EXTRACT WAVES 
-
-allroi_waves = NaN(length(VSDI.timebase), length(VSDI.roi.labels), VSDI.nonanidx(end)); 
+nroi =length(VSDroiTS.roi.labels);
+allroi_waves = NaN(length(VSDI.timebase), nroi, VSDI.nonanidx(end)); 
 
 for triali = makeRow(VSDI.nonanidx)
     movietrial = movies(:,:,:,triali);
-    for nroi = 1:length(VSDI.roi.labels)
-        roimask = VSDroiTS.roi.manual_mask(:,:,nroi);
-        allroi_waves(:,nroi,triali) = roi_TSave(movietrial,roimask);
+    for roii = 1:nroi
+        roimask = VSDroiTS.roi.manual_mask(:,:,roii);
+        allroi_waves(:,roii,triali) = roi_TSave(movietrial,roimask);
     end
 end
 
-% 3.SAVE NEW MOVIE STRUCTURE: Save new registered movie, copying some references from the movie
+% 3.SAVE in TS STRUCTURE: Save waves (VSDroiTS) structure copying some references from the movie
 % structure used to apply new changes in
 VSDroiTS.(fieldref).data= allroi_waves;
 VSDroiTS.(fieldref).times = inputStruct.times;

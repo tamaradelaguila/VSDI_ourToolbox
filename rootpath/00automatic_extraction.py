@@ -21,13 +21,13 @@ for dmlfile in listdir:
         filelist.append (os.path.join(sourcepath, dmlfile))
     
 # load python input file and output path
-function =os.path.join(rootpath,'functions','python_extraction','extract_images3.py')
+function =os.path.join(rootpath,'functions','python2','extract_images3.py')
 salida=  output_path
 
 
 for file in filelist:
     # GET NAME OF FILE
-    filename =  file[-14:-4]+'.dml'
+    filename =  file #[-14:-4]+'.dml'
     savename = file[-14:-4]
     origen=  os.path.join(sourcepath,filename)
     # substitute separators for the function

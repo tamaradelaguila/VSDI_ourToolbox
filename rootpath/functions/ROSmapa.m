@@ -1,4 +1,4 @@
-function [output] = ROSmapa(action, object, objectref)
+function [output] = ROSmapa(action, object, object_feature)
 % PERFORMS BASIC LOAD/SAVE FUNCTIONS REFERENCE TO ROSmapa
 % action = 'save' or 'load' or 'savemovie' or 'loadmovie'
 
@@ -30,13 +30,13 @@ switch action
 %         assert(mod(object, 1) == 0 && , 'input to load must be a single number');
         
         try
-            load(fullfile(rootpath, 'grouplist.mat'))
+            load(fullfile(datapath, 'grouplist.mat'))
         catch 
             warning('fish cannot be load because "grouplist.mat" does not exist')
         end
         
      case 'savemovie'
-            if ~exist('objectref') 
+            if ~exist('object_feature') 
                 error('input a proper reference name for the movie (as 3rd argument)'); end
 end % input control
 
@@ -50,7 +50,7 @@ switch action
         save(pathname, 'VSDI')
 
     case 'load'
-        load(fullfile(rootpath, 'grouplist')) %load structure list to take the fish reference
+        load(fullfile(datapath, 'grouplist')) %load structure list to take the fish reference
         load(fullfile(VSDIpath,[grouplist{object},'.mat'])) %load the fish VSDI
         disp(strcat (grouplist{object}, '_loaded'));
         output= VSDI;
@@ -58,14 +58,14 @@ switch action
     case 'savemovie' 
        VSDmov= object;
        %saveVSDI saves current VSDI structure respect to the current rootpath
-       pathname = fullfile(moviepath,['ROSmapaMov_',num2str(VSDmov.ref),objectref,'.mat']);
+       pathname = fullfile(moviepath,['ROSmapaMov_',num2str(VSDmov.ref),object_feature,'.mat']);
        save(pathname,'VSDmov')
 
     case 'loadmovie' 
-       load(fullfile(rootpath, 'grouplist'))
+       load(fullfile(datapath, 'grouplist'))
        fishref = grouplist{object}(9:end);
        %saveVSDI saves current VSDI structure respect to the current rootpath
-       movieref = [expref,'Mov_',fishref,objectref,'.mat'];
+       movieref = [expref,'Mov_',fishref,object_feature,'.mat'];
        load(fullfile(moviepath,movieref))
        output= VSDmov;       
        disp([movieref, '_loaded']);
@@ -77,7 +77,7 @@ switch action
         save(pathname, 'VSDroiTS')
 
     case 'loadwave'
-        load(fullfile(rootpath, 'grouplist')) %load structure list to take the fish reference
+        load(fullfile(datapath, 'grouplist')) %load structure list to take the fish reference
         fishref = grouplist{object}(9:end);
         load(fullfile(wavespath,[expref 'RoiTS_',fishref,'.mat'])) %load the fish VSDI
         disp(strcat ('ROIs timeseries for fish',grouplist{object}, '_loaded'));
@@ -92,4 +92,4 @@ end
 % end
 
 %% Created: 31/01/2021
-% Updated:
+% Updated: 08/02/21
