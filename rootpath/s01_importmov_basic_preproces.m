@@ -114,10 +114,12 @@ ROSmapa('save', VSDI);
 
 % SUGGESTION: if different F0 are ,keep the basic reference + info about the F0, e.g. outputRef = '_02diffbase10';
 
-%% 03 - MASKED MOVIES
+%% 03 - [1] MAKE CROPMASK, [2] CROPPED-MOVIES
 clearvars -except VSDI nfish
 
-% % MAKE MASK FROM REFERENCE FRAME AND SAVE IN VSDI
+% [1] MAKE & SAVE CROP MASK
+
+% MAKE MASK FROM REFERENCE FRAME AND SAVE IN VSDI
 ref_frame = VSDI.backgr(:,:,VSDI.nonanidx(1)); %the background from the first included trial
 
 %  Before cropping: check all backgrounds to take into account if there is
@@ -137,9 +139,17 @@ roi_preview(VSDI.backgr(:,:,trialsel), crop_poly{1});
 
 % polygon_preview(VSDI.backgr(:,:,1), VSDI.crop.poly{1,1}); 
 
-% IF WE ARE AHPPY WITH THE MASK: SAVE in structure
+% IF WE ARE HAPPY WITH THE MASK: SAVE in structure
 VSDI.crop.mask = crop_mask; 
 VSDI.crop.poly = crop_poly{1}; %stored in rows
+
+% Save one cropped image to help in drawing the different ROI
+cropframe =roi_crop(VSDI.backgr(:,:,VSDI.nonanidx(1)), VSDI.crop.mask);
+
+VSDI.crop.preview = cropmovies(:,:,end,VSDI.nonanidx(1)); % save the crop movie of the first included frame
+ROSmapa('save', VSDI);
+
+% [2] CROPPED-MOVIES (mute if you don't want to extract them)
 
 % 1. REFERENCES for input/output movies
 inputRef =  '_02diff'; 
@@ -149,17 +159,13 @@ inputStruct = ROSmapa('loadmovie', nfish, inputRef);
 inputdata = inputStruct.data;
 
 % 2. PERFORM COMPUTATIONS: APPLY MASK
-
 cropmovies = NaN (size(inputdata));
+
 %initialize
 for triali = makeRow(VSDI.nonanidx)
 inputmovie = squeeze(inputdata(:,:,:,triali));
 cropmovies(:,:,:,triali)= roi_crop(inputmovie, VSDI.crop.mask);
 end
-
-% Save one cropped image to help in drawing the different ROI
-VSDI.crop.preview = cropmovies(:,:,end,VSDI.nonanidx(1)); 
-ROSmapa('save', VSDI);
 
 % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
 % structure used to apply new changes in
@@ -168,5 +174,6 @@ VSDmov.movieref= outputRef;
 VSDmov.data = cropmovies;
 VSDmov.times = inputStruct.times;
 VSDmov.hist = inputStruct.hist;
-VSDmov.hist{1,length(VSDmov.hist)+1} = 'crop_backgr'; %append a new cell with new info
+VSDmov.hist{1,length(inputStruct.hist)+1} = 'crop_backgr'; %append a new cell with new info
+
 ROSmapa('savemovie', VSDmov, VSDmov.movieref); 
