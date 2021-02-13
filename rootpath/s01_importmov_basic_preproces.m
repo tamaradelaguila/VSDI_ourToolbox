@@ -63,7 +63,7 @@ VSDmov.movieref= outputRef;
 VSDmov.data = registermov;
 VSDmov.times = inputStruct.times;
 VSDmov.hist = inputStruct.hist;
-VSDmov.hist{1,length(inputStruct.hist)+1} = 'crop_backgr'; %append a new cell with new info
+VSDmov.hist{1,length(VSDmov.hist)+1} = 'crop_backgr'; %append a new cell with new info
 ROSmapa('savemovie', VSDmov, VSDmov.movieref); 
 clear inputStruct
 
@@ -99,7 +99,7 @@ for triali = makeRow(VSDI.nonanidx) %import only included trials
     
     VSDI.backgr(:,:,triali) = diffmovies(:,:,end,triali); % store background
 end
-    
+
 % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
 % structure used to apply new changes in
 VSDmov.ref = inputStruct.ref;
@@ -107,7 +107,7 @@ VSDmov.movieref= outputRef;
 VSDmov.data = diffmovies;
 VSDmov.times = inputStruct.times;
 VSDmov.hist = inputStruct.hist;
-VSDmov.hist{1,length(inputStruct.hist)+1} = 'crop_backgr'; %append a new cell with new info
+VSDmov.hist{1,length(VSDmov.hist)+1} = 'crop_backgr'; %append a new cell with new info
 ROSmapa('savemovie', VSDmov, VSDmov.movieref); 
 
 ROSmapa('save', VSDI); 
@@ -168,5 +168,5 @@ VSDmov.movieref= outputRef;
 VSDmov.data = cropmovies;
 VSDmov.times = inputStruct.times;
 VSDmov.hist = inputStruct.hist;
-VSDmov.hist{1,length(inputStruct.hist)+1} = 'crop_backgr'; %append a new cell with new info
+VSDmov.hist{1,length(VSDmov.hist)+1} = 'crop_backgr'; %append a new cell with new info
 ROSmapa('savemovie', VSDmov, VSDmov.movieref); 
