@@ -1,4 +1,4 @@
-%% s02 FILTERING and CROP(further preprocessing)
+%% s02 FILTERING (further preprocessing) and crop
 % Crop masks should have been drawn in the s01_importmov_basic_preproces
 
 clear 
@@ -55,6 +55,7 @@ for triali = makeRow(VSDI.nonanidx)
     clear tempmov
 end
 
+
 % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
 % structure used to apply new changes in
 VSDmov.ref = inputStruct.ref;
@@ -63,11 +64,9 @@ VSDmov.data = filtmov;
 VSDmov.times = inputStruct.times;
 %@ SET !!! according to the filters applie (append as many as needeed)
 VSDmov.hist = inputStruct.hist;
-VSDmov.hist{1,length(inputStruct.hist)+1} = 'tcnst = 10'; %@ SET   
-VSDmov.hist{1,length(inputStruct.hist)+1} = 'gauss = 1'; %@ SET  
-VSDmov.hist{1,length(inputStruct.hist)+1} = 'median = 3'; %@ SET  
-VSDmov.hist{1,length(inputStruct.hist)+1} = 'crop-background'; %@ SET  
+VSDmov.hist{length(VSDmov.hist)+1,1} = 'tcnst = 10'; %@ SET   
+VSDmov.hist{length(VSDmov.hist)+1,1} = 'gauss = 1'; %@ SET  
+VSDmov.hist{length(VSDmov.hist)+1,1} = 'median = 3'; %@ SET  
+VSDmov.hist{length(VSDmov.hist)+1,1} = 'crop-background'; %@ SET  
 ROSmapa('savemovie', VSDmov, VSDmov.movieref); 
 
-%% Created: 13/02/21
-% Updated:

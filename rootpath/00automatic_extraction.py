@@ -21,7 +21,7 @@ for dmlfile in listdir:
         filelist.append (os.path.join(sourcepath, dmlfile))
     
 # load python input file and output path
-function =os.path.join(rootpath,'functions','python2','extract_images3.py')
+function =os.path.join(rootpath,'functions','external','python2','extract_images3.py')
 salida=  output_path
 
 

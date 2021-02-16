@@ -21,13 +21,12 @@ grouplist{} = '';
 
 save(fullfile(path.data,'grouplist.mat'),'grouplist');
 
-
 %% 2. CREATE VSDI structure (FOR EACH FISH) 
 VSDI.ref = 200611 ; %@ SET
 VSDI.info.stime = 6; %ms (sampling time) @ SET
 
 % IMPORT LIST. Have to be saved from Brainvision. See notes for details 
-listpath =  'C:\Users\User\Documents\UGent_brugge\VSDI_tamaraToolbox\BVdml'; %@ SET
+listpath =  path.list; %@ SET in user_settings
 listpath = fullfile(listpath,strcat('filelist',num2str(VSDI.ref),'.csv'));
 
 list_table=  readtable(listpath);
@@ -51,7 +50,6 @@ VSDI.condition(triali,2) = VSDI.list(triali).c2;
 end
 
 VSDI.nonanidx= find(~isnan(VSDI.condition(:,1))) ;
-
 
 % SET MORE PARAMETERS
 VSDI.info.Sonset = 300; % ms (from start of recording) %@ SET

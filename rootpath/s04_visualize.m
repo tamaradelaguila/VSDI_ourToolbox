@@ -37,21 +37,26 @@ plot_ERPs(timeseries, VSDI.timebase,trials2plot, roi2plotidx , VSDroiTS.roi.labe
 
 %@ SET...
     % ... what and how to plot
-    movie_ref = '_03crop'; % input movie
-    frame2plot = 200; 
-    trial2plot = 2;
+    movie_ref = '_04filt1'; % input movie
+    frame2plot = 66; %idx
+    trial2plot = 2; %idx
     act_clim= [-0.2 0.2]; %coloraxis of the shown colors
     % ...noise threshold settings
     baseline = 1:20; %range of frames to consider baseline (idx)
     SDfactor = 4;
-
+    %...absolute threshold settings
+    method = 'absvalue';
+    value = 0.07;
 % Load movie
 VSDmov = ROSmapa('loadmovie',nfish,movie_ref);
 movie = VSDmov.data(:,:,1:end-1,trial2plot); %movie to plot
 
+%@ SET which threshold to use (and leave the other unmuted)
 % NOISE THRESHOLD:
-[movie_thres, alphachan, ~] = movie_noisethresh(movie,baseline,SDfactor, 0); 
+% [movie_thres, alphachan, ~] = movie_noisethresh(movie,baseline,SDfactor, 0); 
 
+% ABSOLUTE THRESHOLD 
+[movie_thres, alphachan] = movie_absthresh(movie,method,value); 
 % NOTE_DEV: comprobar cómo tiene que ser alphachannel
 
 % OVERLAID PLOT
@@ -68,3 +73,21 @@ ax1.XTick = []; ax1.YTick = [];
 
 % DEV NOTE (still to do):  imlpement tiles function with the overimposed
 % colors
+
+%% TILES
+    movie_ref = '_04filt1'; % input movie
+    VSDmov = ROSmapa('loadmovie',nfish,movie_ref);
+
+          tileset.start_ms = -100; % time in ms for first tile
+          tileset.end_ms = 1000;
+          tileset.nrows = 6; 
+          tileset.ncols = 8; 
+%           tileset.climsat = 0.8 ; %colormap limit would be the 80% of the max/min value
+          tileset.clims = [0-0.8 0.8];
+          tileset.thresh = [-0.5 0.5];
+          tileset.time2plot = 0; %select time (ms)
+          tileset.x = 35; 
+          tileset.y = 35; 
+
+     movie2plot = VSDmov.data(:,:,:,2); 
+     plot_tilemovie(movie2plot, VSDI.timebase, tileset);

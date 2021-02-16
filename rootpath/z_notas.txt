@@ -76,7 +76,7 @@ VSDI.roi.roimask
 '_02diff' : differential values 
 '_03crop' : cropped background
 
-'_04filter1', etc (different preprocessing steps)
+'_04filt1', etc (different preprocessing steps)
 '
 
 From '_02diff' on, the background is stored in raw values in the last frame
