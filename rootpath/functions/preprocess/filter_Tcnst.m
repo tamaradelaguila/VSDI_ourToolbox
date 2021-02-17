@@ -2,7 +2,8 @@ function [output] = filter_Tcnst(input, weight)
 % [output] = filter_Tcnst(input, weight)
 % TIME-CONSTANT FILTER (as defined in brainvision) FOR TEMPORAL SMOOTHING
 % OF WAVES (1Dinput) OR PIXELS OF MOVIES (3Dinput)
-% INPUT: wave or movie to filter
+% INPUT: wave or movie to filter (if movie, the background is in the last
+% frame and will be excluded from the computation)
 
 % The function that does the actual calculation is the attached  Tcnst1. 
 % It uses 'weight' number of previous timepoints to smooth. The first points are smoothed in a reversed way, using next timepoints 
@@ -28,18 +29,22 @@ if length(size(input))== 2 % waves, although being 1D, they are represented in m
 end
 
 if length(size(input))== 3 % If it is a movie, the filter is applied to each pixel
-    x = size(input,1); y =size(input,2);
-    npix= x*y;
-    t= size(input,3);
+    movie = input(:,:,1:end-1); %leave the backgrond out of the computation
     
-    input_flat = reshape(input, npix, t);
+    x = size(movie,1); y =size(movie,2);
+    npix= x*y;
+    t= size(movie,3);
+    
+    input_flat = reshape(movie, npix, t);
     
     for px = 1:npix
     output_flat(px,:)= Tcnst1(input_flat(px,:), weight);
     end
     
     output = reshape(output_flat,x,y,t);
-end
+    output(:,:,end+1) = input(:,:,end); % restore the background frame
+
+end %end if movie
 
 end
 
@@ -68,4 +73,4 @@ function [outputT1] = Tcnst1(input, weight)
 end
 
 %% Created: 13/02/21 (from old code)
-% Updated
+% Updated: 17/02/21 to leave the background out the computations
