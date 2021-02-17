@@ -129,6 +129,7 @@ end
 %     clear tempmov
 % end
 
+filtmov = filt4; 
 % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
 % structure used to apply new changes in
 VSDmov.ref = inputStruct.ref;
