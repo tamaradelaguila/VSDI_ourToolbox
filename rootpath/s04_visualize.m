@@ -83,7 +83,7 @@ ax1.XTick = []; ax1.YTick = [];
           tileset.nrows = 6; 
           tileset.ncols = 8; 
 %           tileset.climsat = 0.8 ; %colormap limit would be the 80% of the max/min value
-          tileset.clims = [0-0.8 0.8];
+          tileset.clims = [0-0.9 0.9];
           tileset.thresh = [-0.5 0.5];
           tileset.time2plot = 0; %select time (ms)
           tileset.x = 35; 
@@ -97,7 +97,7 @@ ax1.XTick = []; ax1.YTick = [];
     VSDmov = ROSmapa('loadmovie',nfish,movie_ref);
           tileset.start_ms = -100; % time in ms for first tile
           tileset.end_ms = 1000;
-          tileset.clims = [-0.8 0.8];
+          tileset.clims = [-0.9 0.9];
           tileset.thresh = [-0.1 0.1];
      movie2plot = VSDmov.data(:,:,:,2); 
      plot_tilemovie12frames(movie2plot, VSDI.timebase, tileset);

@@ -118,7 +118,7 @@ end
 % 2.4. Cubic filter
 for triali = makeRow(VSDI.nonanidx)
 tempmov = filt3(:,:,:,triali);
-filt4(:,:,:,triali) = filter_cubicBV(tempmov, medianpix);
+filt4(:,:,:,triali) = filter_cubicBV(tempmov);
 clear tempmov
 end
 

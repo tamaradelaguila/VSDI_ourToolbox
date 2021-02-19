@@ -63,7 +63,7 @@ VSDmov.movieref= outputRef;
 VSDmov.data = registermov;
 VSDmov.times = inputStruct.times;
 VSDmov.hist = inputStruct.hist;
-VSDmov.hist{1,length(inputStruct.hist)+1} = 'crop_backgr'; %append a new cell with new info
+VSDmov.hist{length(VSDmov.hist)+1,1} = 'register'; %append a new cell with new info
 ROSmapa('savemovie', VSDmov, VSDmov.movieref); 
 clear inputStruct
 
@@ -107,7 +107,7 @@ VSDmov.movieref= outputRef;
 VSDmov.data = diffmovies;
 VSDmov.times = inputStruct.times;
 VSDmov.hist = inputStruct.hist;
-VSDmov.hist{1,length(inputStruct.hist)+1} = 'crop_backgr'; %append a new cell with new info
+VSDmov.hist{length(VSDmov.hist)+1,1} = 'raw2diffperc2'; %append a new cell with new info
 ROSmapa('savemovie', VSDmov, VSDmov.movieref); 
 
 ROSmapa('save', VSDI); 
@@ -174,6 +174,6 @@ VSDmov.movieref= outputRef;
 VSDmov.data = cropmovies;
 VSDmov.times = inputStruct.times;
 VSDmov.hist = inputStruct.hist;
-VSDmov.hist{1,length(inputStruct.hist)+1} = 'crop_backgr'; %append a new cell with new info
+VSDmov.hist{length(VSDmov.hist)+1,1} = 'crop_backgr'; %append a new cell with new info
 
 ROSmapa('savemovie', VSDmov, VSDmov.movieref); 
