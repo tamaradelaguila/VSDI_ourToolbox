@@ -1,3 +1,10 @@
+% 
+% path.rootpath = 'C:\Users\User\Documents\UGent_brugge\VSDI_tamaraToolbox\VSDI_ourToolbox\rootpath';
+% path.data = 'C:\Users\User\Documents\UGent_brugge\VSDI_tamaraToolbox\ROSmapa_data';
+% path.list = 'C:\Users\User\Documents\UGent_brugge\VSDI_tamaraToolbox\BVdml';
+% 
+% addpath(genpath(fullfile(path.rootpath, 'functions')));
+
 
 % path.rootpath = 'C:\Users\User\Documents\UGent_brugge\VSDI_tamaraToolbox\VSDI_ourToolbox\rootpath';
 path.rootpath = pwd;
@@ -6,9 +13,10 @@ path.rootpath = pwd;
 
 path.data = fullfile(temp.newdir, 'ROSmapa_data');
 path.list =fullfile(temp.newdir, 'BVdml');
-path.list = 'C:\Users\User\Documents\UGent_brugge\VSDI_tamaraToolbox\BVdml';
+path.grouplist = fullfile(temp.newdir, 'ROSmapa_data');
 
 clear temp
 
 addpath(genpath(fullfile(path.rootpath, 'functions')));
+
 
