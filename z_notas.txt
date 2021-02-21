@@ -1,23 +1,29 @@
 NOTAS PRELIMINARES ------
 
-EJecutar siempre los scripts desde la 'rootpath'
+*EJECUTAR SIEMPRE LOS SCRIPTS DESDE la 'rootpath' del experimento
 
 La rootpath será la carpeta con el nombre del experimento.
-La 'rootpath' con el código de la toolbox debe contener: 
-
-- función específica del experimento (ejemplo: ROSmapa.m)
-- 'user_settings.m'
-- data
 
 En la misma carpeta que 'rootpath' debe de estar la carpeta 'VSDI_outToolbox', con:
-- rootpath: contiene los scripts que se copiarán para la rootpath de cada experimento
+- carpeta 'rootpath': contiene los scripts a copiar en la rootpath de cada experimento
 - carpeta 'functions'
 - scripts de matlab
+
+La 'rootpath' del experimento debe contener:
+- función específica del experimento (ejemplo: ROSmapa.m)
+- 'user_settings.m'
+- carpeta 'data'
+- 'grouplist.mat' (que se crea en c00_first_steps')
+- scripts de matlab (copia adaptada)
 - script de python de importación en matlab de '.dml'
-- 'grouplist' (que se crea en c00_first_steps')
-- carpetas: 'data', 'plots'
+
+· La función específica, 'user_settings' hay que modificarlos para cada experimento.
+· Los scripts también, ajustando el código del experimento. 
+· Tanto la carpeta 'root' del experimento como la función específica tendrán como nombre
+    la referencia del experimento
+
   
-La carpeta 'data' dentro de la rootpath del experimento debe contener:
+La carpeta 'data' dentro de la 'root' del experimento debe contener:
 - 'dataVSDI' - para las estructuras de pez
 - 'datamovies' - para las estructuras de películas
 - 'datawaves' - para las estructuras de timeseries de roi
@@ -25,14 +31,16 @@ La carpeta 'data' dentro de la rootpath del experimento debe contener:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 1. PASOS PREVIOS
-Antes de nada, para cada ordenador:
-- Ajustar en la función del experimento (e.g.'ROSmapa.m'): 'rootpath'
-- Ajustar en 'user_settings.m': 'path.rootpath', 'path.data'
-- Ajustar en 'functions/functions_settings.m': 'datapath'
+Antes de nada, para cada experimento:
+- Ajustar en la función del experimento (e.g.'ROSmapa.m'): 'datapath'
 - Crear 'filelist#ref.csv' desde Brainvision (ver punto 6 abajo)
+- Comprobar en 'user_settings' si hay que ajustar la rootpath manualmente (o si se hace automáticamente)
 
 (antes de usar el código de python para la extracción automática)
 - '00automatic_extraction.py': Ajustar las carpetas raíz, de entrada y de salida.
+
+(si en user_settings la rootpath es automática):
+ejecutar siempre desde la carpeta 'root' del experimento
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 2. PIPELINE MATLAB: 
