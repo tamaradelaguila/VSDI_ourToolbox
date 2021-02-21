@@ -12,8 +12,7 @@ function [output] = ROSmapa(action, object, object_feature)
 
 %  [VSDmov]= ROSmapa('loadmovie', nfish, moviereference) - uses moviereference
 
-rootpath = 'C:\Users\User\Documents\UGent_brugge\VSDI_tamaraToolbox\VSDI_ourToolbox\rootpath';
-datapath = 'C:\Users\User\Documents\UGent_brugge\VSDI_tamaraToolbox\ROSmapa_data';
+datapath = 'C:\Users\User\Documents\Git\ROSmapa\data';
 
 VSDIpath = fullfile(datapath,'dataVSDI');
 moviepath = fullfile(datapath,'datamovies');
