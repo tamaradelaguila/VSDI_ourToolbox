@@ -1,0 +1,106 @@
+NOTAS PRELIMINARES ------
+
+EJecutar siempre los scripts desde la 'rootpath'
+
+La rootpath será la carpeta con el nombre del experimento.
+La 'rootpath' con el código de la toolbox debe contener: 
+
+- función específica del experimento (ejemplo: ROSmapa.m)
+- 'user_settings.m'
+- data
+
+En la misma carpeta que 'rootpath' debe de estar la carpeta 'VSDI_outToolbox', con:
+- rootpath: contiene los scripts que se copiarán para la rootpath de cada experimento
+- carpeta 'functions'
+- scripts de matlab
+- script de python de importación en matlab de '.dml'
+- 'grouplist' (que se crea en c00_first_steps')
+- carpetas: 'data', 'plots'
+  
+La carpeta 'data' dentro de la rootpath del experimento debe contener:
+- 'dataVSDI' - para las estructuras de pez
+- 'datamovies' - para las estructuras de películas
+- 'datawaves' - para las estructuras de timeseries de roi
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+1. PASOS PREVIOS
+Antes de nada, para cada ordenador:
+- Ajustar en la función del experimento (e.g.'ROSmapa.m'): 'rootpath'
+- Ajustar en 'user_settings.m': 'path.rootpath', 'path.data'
+- Ajustar en 'functions/functions_settings.m': 'datapath'
+- Crear 'filelist#ref.csv' desde Brainvision (ver punto 6 abajo)
+
+(antes de usar el código de python para la extracción automática)
+- '00automatic_extraction.py': Ajustar las carpetas raíz, de entrada y de salida.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+2. PIPELINE MATLAB: 
+
+s00_first_steps
+s00_automatic_extraction (python)*
+s01_importmov_basic_preprocess
+s02_preprocess_filters
+s03_define_rois
+s04_visualise
+s05_extract_ROItimeseries
+s06_analisis1_frame_comparison
+*puede ejecutarse antes o después de s00.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+3. VSDI structure fields: 
+
+[Defined in: s00_preparatory steps]
+VSDI.ref, reference of BV (date)
+VSDI.list, imported from BrainVision Vizualizer .csv
+VSDI.trialref, copied from VSDI.list.Name
+VSDI.condition, from manually labeled conditions ()
+VSDI.info
+        .stime (sampling time)
+        .Sonset(ms, when the stimmulus comes)
+        .Sdurat (column with duration of stimulus for each trial)
+VSDI.nonanidx, idx with non-NaN condition label (that is, included in the analysis)
+
+[Defined in: s01_import_basic_preprocess]
+VSDI.timeabs: ms (respect to the beginning of recording)
+VSDI.timebase:  (respect to the Sonset);
+VSDI.backgr: reference image used for registering
+VSDI.cropmask: mask to leave background out
+
+[Defined in: s02_ROIdefinition]
+VSDI.roi.labels
+VSDI.roi.poly
+VSDI.roi.roimask
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+4. MOVIE STRUCTURES FIELDS 
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+5. MOVIES' REFERENCES
+'_00raw' : raw movies from python
+'_01registered' :registered (aligned) trials respect the first frame of first included trial
+'_02diff' : differential values 
+'_03crop' : cropped background
+
+'_04filt1', etc (different preprocessing steps)
+'
+
+From '_02diff' on, the background is stored in raw values in the last frame
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+6. CÓMO CREAR filelist.CSV
+Poner todos los archivos '.dml' del experimento en una carpeta, que no contenga nada más.
+Desde BrainVision, en el panel 'FileList' pulsar el botón 'BV Viewer'
+Desde el visor que se abre: File > 'Export data list with CSV format'.
+Nombrar con el nombre de referencia de BrainVision (fecha en formato AAMMDD) de la siguiente manera :
+ 'filelist######.csv' (e.g. filelist200611). 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+7. REFERENCIA PARA CADA PEZ
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+8. REFERENCIA PARA CADA EXPERIMENTO
+Cada experimento tendrá una referencia con la que se guardarán las estructuras de todos los sujetos. 
+Para manejar los datos de cada experimento, hay que usar la función propia. 
+Por ejemplo: 
+    ROSmapa.m >>> guarda las estructuras como ROSmapa_######.mat, siendo ###### la ref del sujeto
