@@ -77,7 +77,11 @@ clearvars -except VSDI nfish
 
 % 1. REFERENCES for input/output movies
 inputRef =  '_01registered'; 
-outputRef = '_02diff';
+outputRef = '_02diff_perc';
+% outputRef = '_02diff';
+
+% adjust 'outputRef' depending on whether 'raw2diffperc2' or
+% 'raw2diff' function is used
 
 inputStruct = ROSmapa('loadmovie', nfish, inputRef);
 
@@ -96,7 +100,7 @@ diffmovies = NaN(inputdim(1),inputdim(2),inputdim(3)+1,inputdim(4));
 for triali = makeRow(VSDI.nonanidx) %import only included trials
     inputmovie = squeeze(inputdata(:,:,:,triali));
     diffmovies(:,:,:,triali) = raw2diffperc2(inputmovie, baseframe);
-    
+%     diffmovies(:,:,:,triali) = raw2diff(inputmovie, baseframe);
     VSDI.backgr(:,:,triali) = diffmovies(:,:,end,triali); % store background
 end
     
@@ -107,7 +111,7 @@ VSDmov.movieref= outputRef;
 VSDmov.data = diffmovies;
 VSDmov.times = inputStruct.times;
 VSDmov.hist = inputStruct.hist;
-VSDmov.hist{length(VSDmov.hist)+1,1} = 'raw2diffperc2'; %append a new cell with new info
+VSDmov.hist{length(VSDmov.hist)+1,1} = outputRef; %append a new cell with new info
 ROSmapa('savemovie', VSDmov, VSDmov.movieref); 
 
 ROSmapa('save', VSDI); 
