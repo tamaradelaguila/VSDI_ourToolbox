@@ -58,7 +58,7 @@ switch action
        VSDmov= object;
        %saveVSDI saves current VSDI structure respect to the current rootpath
        pathname = fullfile(moviepath,['ROSmapaMov_',num2str(VSDmov.ref),object_feature,'.mat']);
-       save(pathname,'VSDmov')
+       save(pathname,'VSDmov', '-v7.3')
 
     case 'loadmovie' 
        load(fullfile(datapath, 'grouplist'))

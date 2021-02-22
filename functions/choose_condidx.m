@@ -16,5 +16,8 @@ end
 
 end
 
+%% IF ONLY ONE COLUMN OF THE CONDITION HAS TO BE FOUND, USE:
+% find(cond_matrix(:,1) == cond2find); 
+
 %% Created: 07/02/21
 % Updated:
