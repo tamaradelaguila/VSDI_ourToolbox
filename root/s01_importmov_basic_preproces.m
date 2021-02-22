@@ -157,7 +157,7 @@ ROSmapa('save', VSDI);
 
 % SUGGESTION: if different F0 are ,keep the basic reference + info about the F0, e.g. outputRef = '_02diffbase10';
 
-%% 04 - [1] MAKE CROPMASK, [2] CROPPED-MOVIES
+%% 04 - [1] MAKE CROPMASK, [2] CROPPED-MOVIES (optional)
 clearvars -except VSDI nfish
 
 % [1] MAKE & SAVE CROP MASK
