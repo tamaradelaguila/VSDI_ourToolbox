@@ -95,7 +95,7 @@ ax1.XTick = []; ax1.YTick = [];
 %% 5 - OVERLAID 12 TILES
     movie_ref = '_05filt1'; %@ SET input movie
     trial2plot = 16; %@ SET
-    VSDmov = fertest('loadmovie',nfish,movie_ref);
+    VSDmov = ROSmapa('loadmovie',nfish,movie_ref);
     movie2plot = VSDmov.data(:,:,:,trial2plot); 
 %     movie2plot = movie_ave(VSDmov.data, 1:16); % for average
 
@@ -107,3 +107,20 @@ ax1.XTick = []; ax1.YTick = [];
           tileset.thresh = [-1 1];
 
      plot_tilemovie12frames(movie2plot, VSDI.timebase, tileset);
+
+     %% 6 - AVERAGE AND FILTER
+    movie_ref = '_05filt1'; % input movie
+    VSDmov = ROSmapa('loadmovie',nfish,movie_ref);
+    trialsidx = find(VSDI.condition(:,4) == 41); %@ SET
+   
+   
+    [ave, hist] = movie_avefilt_wrapper(VSDmov.data, trialsidx, 'filt1');
+
+          tileset.start_ms = -100; % time in ms for first tile
+          tileset.end_ms = 600;
+%           tileset.clims = [-0.9 0.9];
+%           tileset.thresh = [-0.1 0.1];
+          tileset.clims = [-6 6];
+          tileset.thresh = [-2 2];
+         
+     plot_tilemovie12frames(ave, VSDI.timebase, tileset);
