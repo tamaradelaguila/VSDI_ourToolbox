@@ -1,4 +1,4 @@
-function [] = plot_wavesplot(waves, roilabels, txttitle, trials2plot, trials_inblock)
+function [] = plot_wavesplot2(waves, roilabels, txttitle, trials2plot, trials_inblock)
 %  [] = plot_wavesplot(waves, roilabels, ref, trials2plot, trials_inblock) Makes waveplots with one line for each roi all roi of 'trials2plot', to trial inspection; each figure will have
 % 'trials_inblock' number of trials.
 
@@ -11,8 +11,19 @@ function [] = plot_wavesplot(waves, roilabels, txttitle, trials2plot, trials_inb
 
 % OUTPUT: wavesplot
 
+
 % leave background out:
 waves = waves(1:end-1,:,:);
+
+rowskip = abs( mean(waves(:))+ 2*std(waves(:)));
+rowskip = 2.5 * rowskip; 
+% switch typedata
+%     case 'diff_perc'
+%         rowskip = .25;
+%     case 'diff'
+%         rowskip = 2;
+%         
+% end
 
 % trials_inblock= 15; 
 nblocks = ceil(length(trials2plot)/trials_inblock);
@@ -49,16 +60,16 @@ end
 
 % step 2: plot block of concatenated trials
 figure; hold on
-yonset = 0; 
+yonset = 0;
 for roi_idx = 1:nroi 
-yonset = yonset +.25;
-plot(channels(:,roi_idx)+yonset); %flag
+yonset = yonset + rowskip;
+plot(channels(:,roi_idx)+yonset); 
 end
 
 % step 3: axis labelling
-ymax = 0.25*nroi;
-ylim([0,ymax+0.15])
-yticks ([linspace(.25, ymax, nroi)]);
+ymax = rowskip*nroi;
+ylim([0,ymax+rowskip])
+yticks ([linspace(rowskip, ymax, nroi)]);
 yticklabels (roilabels) 
 xticks(trial_flag)
 xticklabels (trial_label)

@@ -38,6 +38,7 @@ for triali = makeRow(VSDI.nonanidx)
 tempmov = inputdata(:,:,:,triali);
 filt1(:,:,:,triali) = filter_Tcnst(tempmov,tcnst);
 clear tempmov
+disp(triali)
 end
 
 % 2.2. Spatial Filter (mean)
@@ -45,6 +46,7 @@ for triali = makeRow(VSDI.nonanidx)
 tempmov = filt1(:,:,:,triali);
 filt2(:,:,:,triali) = filter_spatial(tempmov, meanpix);
 clear tempmov
+disp(triali)
 end
   
 % 2.3. Median spatial filter
@@ -52,6 +54,8 @@ for triali = makeRow(VSDI.nonanidx)
 tempmov = filt2(:,:,:,triali);
 filt3(:,:,:,triali) = filter_median(tempmov, medianpix);
 clear tempmov
+disp(triali)
+
 end
 
 % 2.4. Cubic filter
@@ -59,6 +63,7 @@ for triali = makeRow(VSDI.nonanidx)
 tempmov = filt3(:,:,:,triali);
 filt4(:,:,:,triali) = filter_cubicBV(tempmov);
 clear tempmov
+disp(triali)
 end
 
 % % 2.5. Crop background
@@ -83,7 +88,7 @@ VSDmov.hist{length(VSDmov.hist)+1,1} = 'spatialmean = 3'; %@ SET
 VSDmov.hist{length(VSDmov.hist)+1,1} = 'median = 3'; %@ SET  
 VSDmov.hist{length(VSDmov.hist)+1,1} = 'cubicBV'; %@ SET
 % VSDmov.hist{length(VSDmov.hist)+1,1} = 'crop-background'; %@ SET  
-ROSmapa('savemovie', VSDmov, VSDmov.movieref); 
+fertest('savemovie', VSDmov, VSDmov.movieref); 
 
 %% FILT2:
 

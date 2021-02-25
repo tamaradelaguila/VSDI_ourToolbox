@@ -189,7 +189,7 @@ VSDI.crop.poly = crop_poly{1}; %stored in rows
 % Save one cropped image to help in drawing the different ROI
 cropframe =roi_crop(VSDI.backgr(:,:,VSDI.nonanidx(1)), VSDI.crop.mask);
 
-VSDI.crop.preview = cropmovies(:,:,end,VSDI.nonanidx(1)); % save the crop movie of the first included frame
+VSDI.crop.preview = cropframe; % save the crop movie of the first included frame
 ROSmapa('save', VSDI);
 
 % [2] CROPPED-MOVIES (mute if you don't want to extract them)

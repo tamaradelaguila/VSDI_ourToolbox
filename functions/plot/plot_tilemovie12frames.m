@@ -15,6 +15,12 @@ function [] = plot_tilemovie12frames(moviedata, times, tileset, custom_map)
 %           .thresh = [negthresh posthres]; --- values inside this range
 %           will be zero-out
 
+% Input control
+if nargin < 4
+    custom_map = colormap_loadBV();
+end
+% End of input control
+
 datatime = times; 
 background = moviedata(:,:,end);
 moviedata = moviedata(:,:,1:end-1);

@@ -93,11 +93,17 @@ ax1.XTick = []; ax1.YTick = [];
      plot_tilemovie(movie2plot, VSDI.timebase, tileset);
      
 %% 5 - OVERLAID 12 TILES
-    movie_ref = '_04filt1'; % input movie
-    VSDmov = ROSmapa('loadmovie',nfish,movie_ref);
+    movie_ref = '_05filt1'; %@ SET input movie
+    trial2plot = 16; %@ SET
+    VSDmov = fertest('loadmovie',nfish,movie_ref);
+    movie2plot = VSDmov.data(:,:,:,trial2plot); 
+%     movie2plot = movie_ave(VSDmov.data, 1:16); % for average
+
           tileset.start_ms = -100; % time in ms for first tile
           tileset.end_ms = 1000;
-          tileset.clims = [-0.9 0.9];
-          tileset.thresh = [-0.1 0.1];
-     movie2plot = VSDmov.data(:,:,:,2); 
+%           tileset.clims = [-0.9 0.9];
+%           tileset.thresh = [-0.1 0.1];
+          tileset.clims = [-4 4]; %higher threshold for diff values
+          tileset.thresh = [-1 1];
+
      plot_tilemovie12frames(movie2plot, VSDI.timebase, tileset);
