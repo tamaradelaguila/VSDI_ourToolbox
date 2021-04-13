@@ -150,7 +150,7 @@ VSDmov.movieref= outputRef;
 VSDmov.data = diffmovies;
 VSDmov.times = inputStruct.times;
 VSDmov.hist = inputStruct.hist;
-VSDmov.hist{length(VSDmov.hist)+1,1} = outputRef; %append a new cell with new info
+VSDmov.hist{length(VSDmov.hist)+1,1} = [outputRef, baseltext]; %append a new cell with new info
 ROSmapa('savemovie', VSDmov, VSDmov.movieref); 
 
 ROSmapa('save', VSDI); 
@@ -167,17 +167,20 @@ ref_frame = VSDI.backgr(:,:,VSDI.nonanidx(1)); %the background from the first in
 
 %  Before cropping: check all backgrounds to take into account if there is
 %  much movements (and, for instance, leave out of the mask the margins)
+%... frame by frame:
 for triali = makeRow(VSDI.nonanidx)
 imagesc(VSDI.backgr(:,:,triali)); colormap('bone');
 title(strcat('trial=',num2str(triali)))
     pause %to advance to the next frame, press any key; to skip to the end, press 'Ctrl+C'
 end
+% ...alternative, to look at them all at the same time in tiled figures:
+inspect_allbackgrounds(VSDI.backgr)
 
 % DRAW & SAVE CROPMASK:
 [crop_poly, crop_mask] = roi_draw(ref_frame);
 
 % View the result on a selected trial
-trialsel = 2; %@ SET (if you want to check the mask onto any specific frame)
+trialsel = 90; %@ SET (if you want to check the mask onto any specific frame)
 roi_preview(VSDI.backgr(:,:,trialsel), crop_poly{1}); 
 
 % polygon_preview(VSDI.backgr(:,:,1), VSDI.crop.poly{1,1}); 

@@ -12,7 +12,8 @@ function [movie_thres, alphachan] = movie_absthresh(movie,method,value)
 
 % OUTPUT: 
 % 'movie_thres' - zero-out values under threshold
-% 'alphachan' - transparency logic matrix; 1~100% transparency
+% 'alphachan' - transparency logic matrix;
+
 movie_thres = movie(:,:,1:end-1); %removes background
 
 switch method
@@ -21,7 +22,7 @@ switch method
     movie_thres=movie; % preallocate
     
     movie_thres(abs(movie_thres) < value) =0;
-    alphachan = movie_thres==0 ;
+    alphachan = movie_thres~=0 ;
     
     case 'absmaxmin'
         

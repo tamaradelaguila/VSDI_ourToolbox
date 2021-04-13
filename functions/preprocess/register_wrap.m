@@ -1,5 +1,5 @@
 function [registmov] = register_wrap(rawmov, ref_frame,selected_trials)
-% 
+% Performs registration by 'monomodal' method
 
 % INPUT
 % 'rawmov' - unregistered 4D movies with dimensions: x*y*time*trials
