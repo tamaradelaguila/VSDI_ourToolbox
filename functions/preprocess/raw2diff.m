@@ -21,7 +21,7 @@ selframes = raw3Dmatrix(:,:,baseframes);
 F0 = mean(selframes,3);
 
 % Compute 100*(F-F0)/F0 for each value
-diffdata = zeros(imdim1,imdim2,n_frames+1);
+diffdata = NaN(imdim1,imdim2,n_frames+1);
 
 for framei= 1:n_frames
     diffdata(:,:,framei)= (raw3Dmatrix(:,:,framei)-F0);       

@@ -1,0 +1,27 @@
+
+
+% The channels must have the following names to be recognized automatically by matlab: 
+
+ecg - wave channel
+spikes - event channel created from ecg, containing the spikes
+RO - event channel created from ROwave
+stim - event channel with the stimulus onset
+
+ROwave
+EIwave - 
+
+% 2 % 
+File > Export as > MATLAB data(*.mat)
+
+Channel or channel list: All channels (Add)
+
+[export settings]
+Compatibility: Latest version
+(uncheck) use source name in Matlab variable names
+(check) use source channel name in variable names
+Layout options: Waveform and times
+Waveform data: Double
+(check) Export all data
+
+
+

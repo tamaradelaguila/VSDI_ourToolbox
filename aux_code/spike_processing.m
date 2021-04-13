@@ -1,8 +1,10 @@
 %% Load spike matfile
+% Previous steps in 'spike_export.txt'
+
 clear
 
 user_settings
-nfish = 1;
+nfish = 4;
 VSDI = TORus('load',nfish); 
 
 pathspike= '/home/tamara/Documents/MATLAB/VSDI/TORus/data/dataspike';
@@ -13,17 +15,20 @@ clear EIwave ROwave Keyboard pathspike
 
 spike.ref = VSDI.ref;
 
-% GET TIMEBASE
-times(1) = 0;
-for tt =2:ecg.length
-   times(tt) = times(tt-1) + ecg.interval;
-end
-times= times';
+% GET TIMEBASE : not needed anymore because times can be extracted in the
+% spike file
+% times(1) = 0;
+% for tt =2:ecg.length
+%    times(tt) = times(tt-1) + ecg.interval;
+% end
+% times= times';
+% times = downsample(times,10);
 % downsample and save
-spike.ecg_timebase = downsample(times,10) ;
 
 % GET DOWNSAMPLED VALUES
-spike.ecg= downsample (ecg.values, 10); 
+spike.ecg= downsample (ecg.values, 10);
+spike.ecg_timebase = downsample(ecg.times,10) ;
+
 clear ecg times tt
 % % get idx from a given time interval
 % t1 = seconds(60*60);
@@ -37,18 +42,18 @@ clear ecg times tt
 
 %% Heart beats from event channel
 
-spike.spikes = round(spikes.times,2);
-spike.Sonset = round(stim.times,2);
+spike.spikes = round(spikes.times,3);
+spike.Sonset = round(stim.times,3);
 
 clear spikes stim
 %% MATCH - GET REFERENCE TIMES AND ESTIMATED ROtimes correspondence
 
 % MANUALLY ADD REFERENCE
-spike.reftime.trial = '021A';
+spike.reftime.trial = '004A';
 spike.reftime.trialidx = 22;
-spike.reftime.BVtime= '17:45:17'; %from VSDI.list (BVfile time of creation)
-spike.reftime.spiketime = '16:27:22'; %from spike (setting cursor)
-spike.reftime.spike0 = '16:15:59';  %from spike as well
+spike.reftime.BVtime= '15:44:11'; %from VSDI.list (BVfile time of creation)
+spike.reftime.spiketime = '15:26:14'; %from spike (setting cursor)
+spike.reftime.spike0 = '15:21:55';  %from spike as well
 
 % ... and turn into 'duration' vectors
 spike.reftime.BVtime = duration(spike.reftime.BVtime, 'Format','hh:mm:ss');
@@ -59,7 +64,6 @@ spike.reftime.gap = spike.reftime.BVtime - spike.reftime.spiketime;
 
 for ii= 1:length(ro.times)
 spike.match(ii).ROspike = seconds(ro.times(ii)); % absolute seconds
-
 
 spike.match(ii).BVestim = spike.match(ii).ROspike + spike.reftime.gap;
 
@@ -144,7 +148,7 @@ end
 
 for ii = 1:length(spike.match)
 trialidx = spike.match(ii).BVtrialidx; 
-VSDI.ROspike(trialidx,1) = round(seconds(spike.match(ii).ROspike),2); %save in the correspondent BVindex
+VSDI.spike.RO(trialidx,1) = round(seconds(spike.match(ii).ROspike),2); %save in the correspondent BVindex
 end
 % VSDI matching structure
 
