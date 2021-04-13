@@ -271,7 +271,7 @@ nCh  = size(Data{1},2);
 nS   = size(Data{1},3);
 
 % For Frequency-Time Data...
-if ndims(Data{1})==4;
+if ndims(Data{1})==4
     nS = size(Data{1},4);
     nF = size(Data{1},3);
 else
@@ -501,7 +501,7 @@ Info.Parameters.GroupSizes  = [nA, nB];
 % Info.Electrodes.ChannelNeighbours = ChN;
 % 
 % Info.DataFiles              = DataFile;
-
+Results.diffmap             = (mean(Data{1})-mean(Data{2})); % added to the function 
 Results.Obs                 = T_Obs;
 Results.TFCE_Obs            = TFCE_Obs;
 Results.maxTFCE             = sort(maxTFCE);

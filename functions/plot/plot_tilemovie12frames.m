@@ -19,17 +19,22 @@ function [] = plot_tilemovie12frames(moviedata, times, tileset, custom_map)
 if nargin < 4
     custom_map = colormap_loadBV();
 end
+
+if isfield(tileset, 'backgr')
+    background = tileset;
+else
+    background = moviedata(:,:,end);
+end
 % End of input control
 
 datatime = times; 
-background = moviedata(:,:,end);
 moviedata = moviedata(:,:,1:end-1);
 
-% nº samples
+% nï¿½ samples
 starttime = tileset.start_ms;
 endtime = tileset.end_ms;
 
-% nº tiles
+% nï¿½ tiles
 nrows = 3;
 ncols = 4;
 ntiles = nrows*ncols;

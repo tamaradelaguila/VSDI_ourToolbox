@@ -45,9 +45,10 @@ colormap(ax1,'bone');
 ax1.Visible = 'off';
 
 ax2 = axes;
+BVmap= colormap_loadBV();
 % imagesc(ax2,imAct,'alphadata',imAct>thresh);
 imagesc(ax2,imAct,'alphadata',logicalpha);
-colormap(ax2,polarmap(jet));
+colormap(ax2,BVmap);
 caxis(ax2, act_clim);
 ax2.Visible = 'off';
 if plot_cbar
