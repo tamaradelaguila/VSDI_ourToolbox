@@ -5,7 +5,7 @@ clear
 user_settings; 
 % set(0,'DefaultFigureVisible','off')
 
-for nfish = 4
+for nfish = 6
 VSDI = TORus('load',nfish);
 spike = TORus('loadspike', nfish);
 
@@ -32,10 +32,10 @@ for triali = makeRow(VSDI.nonanidx)
 
     ax1 = subplot (4,4,1:2);
     %get values
-    [ecg_crop,tbase] = get_ecg_crop(VSDI.ROspike(triali), 30, spike.ecg, spike.ecg_timebase);
+    [ecg_crop,tbase] = get_ecg_crop(VSDI.spike.RO(triali), 30, spike.ecg, spike.ecg_timebase);
     plot(tbase, ecg_crop)
     ylim([-2.5 2.5]);
-    xline(VSDI.ROspike(triali)+VSDI.info.Sonset/1000,'--r', 'LineWidth',1.5);
+    xline(VSDI.spike.RO(triali)+VSDI.info.Sonset/1000,'--r', 'LineWidth',1.5);
 
 
     %% 2. PLOT WAVES

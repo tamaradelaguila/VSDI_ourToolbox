@@ -4,7 +4,7 @@
 clear
 
 user_settings
-nfish = 4;
+nfish = 6;
 VSDI = TORus('load',nfish); 
 
 pathspike= '/home/tamara/Documents/MATLAB/VSDI/TORus/data/dataspike';
@@ -49,11 +49,11 @@ clear spikes stim
 %% MATCH - GET REFERENCE TIMES AND ESTIMATED ROtimes correspondence
 
 % MANUALLY ADD REFERENCE
-spike.reftime.trial = '004A';
-spike.reftime.trialidx = 22;
-spike.reftime.BVtime= '15:44:11'; %from VSDI.list (BVfile time of creation)
-spike.reftime.spiketime = '15:26:14'; %from spike (setting cursor)
-spike.reftime.spike0 = '15:21:55';  %from spike as well
+spike.reftime.trial = '007A';
+spike.reftime.trialidx = 8;
+spike.reftime.BVtime= '14:45:37'; %from VSDI.list (BVfile time of creation)
+spike.reftime.spiketime = '14:27:41'; %from spike (setting cursor)
+spike.reftime.spike0 = '14:27:11';  %from spike as well
 
 % ... and turn into 'duration' vectors
 spike.reftime.BVtime = duration(spike.reftime.BVtime, 'Format','hh:mm:ss');
@@ -96,13 +96,14 @@ end
     end
 
     % 2.1. Manually get the new time and correct the VSDI structure
-    correctedtime = '16:18:'; % @SET get from spike file (spike-referenced)
+    correctedtime = '14:40:09'; % @SET get from spike file (spike-referenced)
     correctedtime = duration(correctedtime, 'Format', 'hh:mm:ss'); 
     newtime = correctedtime + spike.reftime.gap  % time into BV-reference; copy and manually substitute into VSDI.trialtime.hour (as string) -store old time into VSDI.trialtime.old_hour
 
     TORus('save', VSDI) 
 
 % 3. AND SUBSTITUTE THE CORRECT VALUES INTO THE BVtimes_sec
+
     % GET timeinfo from BV files
     for ii= 1:length(VSDI.trialtime)
     BVtimes_sec(ii) = duration(VSDI.trialtime(ii).hour, 'Format', 'hh:mm:ss')- spike.reftime.spike0;
@@ -160,9 +161,9 @@ check_trialidx=[];
 for ii= 1:makeRow(VSDI.nonanidx)
     % check if there is stimulus in that spike trial
     
-    limit1 = spike.Sonset >= VSDI.ROspike(ii);
-    coinc = spike.Sonset== VSDI.ROspike(ii);
-    limit2 = spike.Sonset < VSDI.ROspike(ii)+2;
+    limit1 = spike.Sonset >= VSDI.spike.RO(ii);
+    coinc = spike.Sonset== VSDI.spike.RO(ii);
+    limit2 = spike.Sonset < VSDI.spike.RO(ii)+2;
     
     spike_idx = find (( limit1 & limit2 )); 
     if ~isempty(spike_idx) && spike_idx > 0

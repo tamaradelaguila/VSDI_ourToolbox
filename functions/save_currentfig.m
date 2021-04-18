@@ -6,9 +6,9 @@ h =  findobj('type','figure');
 n = length(h);
 
 for ii = 1:n
-   namefile = strcat(name, '_',num2str(h(ii).Number)); 
+   namefile = strcat(name, '_',num2str(h(ii).Number),'.jpg'); 
 %    saveas(h(ii), [savepath, name, 'jpg'],'jpg')
-   saveas(h(ii), fullfile(savepath, namefile),'jpg')
+   saveas(h(ii), fullfile(savepath, namefile))
 
    close(h(ii))
 end
