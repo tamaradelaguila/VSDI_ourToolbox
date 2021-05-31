@@ -1,4 +1,4 @@
-function [coord0, mask0] = roicir_draw(back0,roi_labels0,r)
+function [centreO, maskO] = roicir_draw(back0,roi_labels0,r)
 % THE FUNCTIONS ASKS TO DRAW THE ROIS IN THE INPUT BACKGROUND AND STORES THEM AS POLYGONS INTO A CELL
 % STRUCTURE, AND AS MASKS INTO A 3-D MATRIX. If 'roi_labels' argument is not input, a single mask is done. 
 % Colormap is defined up to 14 rois
@@ -21,41 +21,30 @@ xdim = size(back0,1);
 ydim = size(back0,2);
 
 imagesc(back0); colormap('bone');hold on
-
 axis image % Use axis image, for setting aspect ratio to 1:1
 
 
 for ii = 1:nroi
+    title(['draw ROI:',roi_labels0{ii}, '(and Press any key)' ])
 display(strcat('draw ROI:',roi_labels0{ii}, '-and Press any key to continue. Once you have drawn it, before pressing enter, you can adjust the points by simply dragging '))
 
+axis image
 % Get the initial center position from the user
 [x, y] = ginput(1);
 
 % Draw a cicle, and allow the user to change the position
-drawncircle = drawcircle('Center', [x, y], 'InteractionsAllowed', 'translate', 'Radius', 6, 'LineWidth', 1.5);
-
-
-
-% Draw a cicle, and allow the user to change the position 
-drawncircle = drawcircle('Center', [x, y], 'InteractionsAllowed', 'translate', 'Radius', r, 'LineWidth', 1.5);
+drawncircle = drawcircle('Center', [x, y], 'InteractionsAllowed', 'translate', 'Radius', r, 'LineWidth', 1.5, 'color',roicolor(ii,:) );
 pause
-% mask = createMask(drawncircle,xdim,ydim);
+mask = createMask(drawncircle,xdim,ydim);
 % imagesc(mask)
 % sum(mask(:))
 
-%create circular mask with given 'r'
-coord = drawncircle.Center;
-xx = coord(1); yy= coord(2);
-[xx,yy] = ndgrid((1:xdim)-x,(1:ydim)-y); %create coordinate arrays centered on the point
-mask = (xx.^2 + yy.^2)<r^2; %threshold the distance
-
 % save in output
-centre0(ii,1:2) = [xx yy];
-radius0(ii,1)
-mask0(:,:,ii) = mask;
-pause
+centreO(ii,:) = drawncircle.Center;
+maskO(:,:,ii) = mask;
 
 end
+
 
 end
 
@@ -96,6 +85,6 @@ roicolors= [.1 .5 .5;... turqu#
             ];
 end
 
-%% Created : 06/02/21 (from old code)
+%% Created : 06/02/21 (from old code). Updated: 26/05/21
 
 % Updated: -

@@ -1,4 +1,4 @@
-function  plot_framesoverlaid(imAct, imBack, logicalpha, plotnow, axH, act_clim, plot_cbar)
+function  test_plot_framesoverlaid(imAct, imBack, logicalpha, plotnow, axH, act_clim, plot_cbar, custom_map)
 % INPUT 
 % 'imAct' - image to display in colors
 % 'imBack' - background image
@@ -35,6 +35,15 @@ elseif isempty(plot_cbar)
         plot_cbar= 1;
 end 
 
+
+if ~exist('custom_map')
+        colormode= 0;
+elseif isempty(custom_map)
+        colormode= 0;
+else 
+    colormode = 1;
+end
+
 % end of input control ------------------------
 if plotnow
     fig1 = figure; 
@@ -50,7 +59,13 @@ ax2 = axes;
 BVmap= colormap_loadBV();
 % imagesc(ax2,imAct,'alphadata',imAct>thresh);
 imagesc(ax2,imAct,'alphadata',logicalpha);
-colormap(ax2,BVmap);
+
+    if colormode == 1
+    colormap(ax2, custom_map);
+    else
+    colormap(ax2,BVmap);
+    end
+
 caxis(ax2, act_clim);
 ax2.Visible = 'off';
 axis image

@@ -4,7 +4,7 @@
 clear
 
 user_settings
-nfish = 6;
+nfish =8;
 VSDI = TORus('load',nfish); 
 
 pathspike= '/home/tamara/Documents/MATLAB/VSDI/TORus/data/dataspike';
@@ -49,11 +49,11 @@ clear spikes stim
 %% MATCH - GET REFERENCE TIMES AND ESTIMATED ROtimes correspondence
 
 % MANUALLY ADD REFERENCE
-spike.reftime.trial = '007A';
-spike.reftime.trialidx = 8;
-spike.reftime.BVtime= '14:45:37'; %from VSDI.list (BVfile time of creation)
-spike.reftime.spiketime = '14:27:41'; %from spike (setting cursor)
-spike.reftime.spike0 = '14:27:11';  %from spike as well
+spike.reftime.trial = '008A';
+spike.reftime.trialidx = 9;
+spike.reftime.BVtime= '16:28:12'; %from VSDI.list (BVfile time of creation)
+spike.reftime.spiketime = '16:10:17'; %from spike (setting cursor)
+spike.reftime.spike0 = '16:08:04';  %from spike as well
 
 % ... and turn into 'duration' vectors
 spike.reftime.BVtime = duration(spike.reftime.BVtime, 'Format','hh:mm:ss');
@@ -86,8 +86,16 @@ end
     ... skip the non-interest trials (that is, non-recorded trials)
     ... add a new colum/field with 'old_hour' and correct it in the first 'hour' one
 
-% check if there is a missing BV file   diff(VSDI.trialref)
+% check if there is a missing BV file  
+if length(find(diff(VSDI.trialref)==0)) > 0
+	disp('"there is at least 1 missing BV file"')
 
+else 
+    disp('"there is no missing BV file"')
+    
+end   
+
+% check if there is any 
     check_idx = [];
     for ti = 2:length(BVtimes_sec)
         if seconds(BVtimes_sec(ti)) < seconds(BVtimes_sec(ti-1))
@@ -95,8 +103,14 @@ end
         end
     end
 
+    if ~isempty(check_idx)
+        disp(['"check iti in trials idx:"' makeRow(check_idx)])
+    else
+        disp('"there is no odd iti"')
+    end
+    
     % 2.1. Manually get the new time and correct the VSDI structure
-    correctedtime = '14:40:09'; % @SET get from spike file (spike-referenced)
+    correctedtime = '17:05:15'; % @SET get from spike file (spike-referenced); the spike file is the most accurate because the BV time is the time after writing the file and can vary
     correctedtime = duration(correctedtime, 'Format', 'hh:mm:ss'); 
     newtime = correctedtime + spike.reftime.gap  % time into BV-reference; copy and manually substitute into VSDI.trialtime.hour (as string) -store old time into VSDI.trialtime.old_hour
 
@@ -118,7 +132,6 @@ end
                     check_idx = [check_idx; ti-1];
                 end
             end
-
     
 %% MATCH - MATCHING PROCESS
 
@@ -143,6 +156,21 @@ spike.match(ii).BVfiletime = seconds(spike.match(ii).BVfiletime);
 
 end
 
+% check whether there is a repeated matched trial:
+            check_idx = [];
+            for ti = 2:length(spike.match)
+                if spike.match(ti).BVtrialidx- spike.match(ti-1).BVtrialidx < 1
+                    check_idx = [check_idx; ti-1];
+                end
+            end
+            
+    if ~isempty(check_idx)
+        disp(['"check matched trial with idx:"' makeRow(check_idx)])
+    else
+        disp('"there is no repeated consecutive trial or in reversed order"')
+    end
+
+
 % delete any row from ROspike events without a BV file if needed
 
 %% TRANSFER INTO VSDI.structure so the spike times can be used
@@ -151,6 +179,7 @@ for ii = 1:length(spike.match)
 trialidx = spike.match(ii).BVtrialidx; 
 VSDI.spike.RO(trialidx,1) = round(seconds(spike.match(ii).ROspike),2); %save in the correspondent BVindex
 end
+VSDI.spike.match = spike.match_str; 
 % VSDI matching structure
 
 

@@ -29,6 +29,7 @@ imagesc(back0); colormap('bone');hold on
 
 
 for ii = 1:nroi
+title(['draw ROI:',roi_labels0{ii}, '(and Press any key)' ])
 display(strcat('draw ROI:',roi_labels0{ii}, '-and Press any key to continue. Once you have drawn it, before pressing enter, you can adjust the points by simply dragging '))
 % drawnroi = drawpolygon('LineWidth',1.5,'Color',roicolor(ii,:), 'Label', roi_labels0{ii});
 drawnroi = drawpolygon('LineWidth',1.5,'Color',roicolor(ii,:));

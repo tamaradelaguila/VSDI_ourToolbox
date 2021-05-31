@@ -5,7 +5,7 @@ clear
 user_settings; 
 % set(0,'DefaultFigureVisible','off')
 
-for nfish = 6
+for nfish = [1 5 7 11 13]
 VSDI = TORus('load',nfish);
 spike = TORus('loadspike', nfish);
 
@@ -18,7 +18,7 @@ VSDroiTS =TORus('loadwave',nfish)
 roi2plotidx = [1 3 5 7 11];  %@ SET
 
 %% 
-for triali = makeRow(VSDI.nonanidx) 
+for triali = 90%makeRow(VSDI.nonanidx) 
 
     figure
     trialref = VSDI.list(triali).Name(end-7:end-4);
@@ -74,7 +74,9 @@ for triali = makeRow(VSDI.nonanidx)
 
 
     % ABSOLUTE THRESHOLD 
-    [movie_thres, alphachan] = movie_absthresh(movie,method,absthres); 
+    [movie_thres, alphachan] = movie_absthresh(movie,method,absthres);
+        [movie_thres, alphachan] = movie_absthresh(movie,method,0.5);
+
     % NOTE_DEV: test how it has to be the alphachannel
 
     plotsites = [5 6 9 10 11 12 13 14 15 16]; 
@@ -100,7 +102,7 @@ for triali = makeRow(VSDI.nonanidx)
     set(gcf,'PaperUnits','inches','PaperPosition',[0 0 12 12])
     saveas(gcf,name2save,'jpg')
 % 
-    close
+%     close
 
 end %trial
 end %nfish
