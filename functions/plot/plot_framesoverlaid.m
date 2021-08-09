@@ -1,4 +1,8 @@
 function  plot_framesoverlaid(imAct, imBack, logicalpha, plotnow, axH, act_clim, plot_cbar)
+% plot_framesoverlaid(imAct, imBack, logicalpha, plotnow, axH, act_clim,
+% plot_cbar) plots an image overlaid on a background. It can be nested in a
+% subplot by using the axH
+
 % INPUT 
 % 'imAct' - image to display in colors
 % 'imBack' - background image

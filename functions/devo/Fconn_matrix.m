@@ -9,7 +9,7 @@ function fcM = Fconn_matrix (timeser, roi_idx, timebase, wind)
 % INPUT 
 % 'TSdata' - timeseries dataset from one trial. Input the timeseries for all rois (the rois to analyze are selected with the input 'roi_idx'. Dimensions:
 % Timepoints*Rois*trialidx
-% 'window' = [t1 t2](ms) timewindow from TFdata to analyse 
+% 'wind' = [t1 t2](ms) timewindow from TFdata to analyse 
 % 'timebase' (ms) - same reference as window (ms)
 % 'roi_idx' - indexes of roi included in the analysis
 

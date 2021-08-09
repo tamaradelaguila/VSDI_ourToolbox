@@ -57,17 +57,17 @@ end
 
 % step 3: axis labelling
 ymax = 0.25*nroi;
-ylim([0,ymax+0.15])
+ylim([0,ymax+0.15]);
 yticks ([linspace(.25, ymax, nroi)]);
-yticklabels (roilabels) 
-xticks(trial_flag)
-xticklabels (trial_label)
-xlabel ('trial idx')
+yticklabels (roilabels) ;
+xticks(trial_flag);
+xticklabels (trial_label);
+xlabel ('trial idx');
 for ii= 1:length(trial_flag)
-xline(trial_flag(ii))
+xline(trial_flag(ii));
 end
 hold off
 
-title(txttitle)
+title(txttitle);
 
 end

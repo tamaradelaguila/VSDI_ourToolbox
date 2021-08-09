@@ -1,8 +1,7 @@
-function [] = plot_tilemovie_6frames(moviedata, times, tileset, custom_map)
-% [] = plot_tilemovie(moviedata, times, tileset)
-% EXTRACT 12 TILES FROM INPUT MOVIE 3D and STRUCTURE THAT CONTAINS ALL THE SETTINGS
+function [] = devo_plot_tiles_4frames_askwaves(moviedata, times, tileset, custom_map, npoints, r)
+% [] = plot_tilemovie(moviedata, times, tileset, custom_map, npoints, r)% IT plots 4 tiles and asks for npoints to plot 
 
-% INPUTS:
+%% INPUTS:
 %       moviedata: 3D already-inverted data
 %       times: timebase corresponding to the different frames (in ms)
 %       tileset: structure with settings for tiling in fields: 
@@ -35,8 +34,8 @@ starttime = tileset.start_ms;
 endtime = tileset.end_ms;
 
 % n� tiles
-nrows = 2;
-ncols = 3;
+nrows = 3;
+ncols = 4;
 ntiles = nrows*ncols;
 
 % Obtain Time
@@ -55,63 +54,70 @@ imtiles = moviedata(:,:, timeindx,: ); % movie of the selected frames
 imalpha = imtiles> tileset.thresh(1) & imtiles< tileset.thresh(2);
 imalpha = ~imalpha;
 %% PLOT
+nrows = 1;
+ncols = 5; 
 
+xdim = size(background,1); 
+ydim = size(background,2);
+
+pointcolors = parula(npoints);
+
+tit = 'test';
 figure
     
-
-    i = 1; 
-   ax1 = subplot(nrows, ncols, i); 
+    for i = 1:4
+   ax(i) = subplot(nrows, ncols, i); 
 %    imagesc(imtiles(:,:,ploti))
-   plot_framesoverlaid(imtiles(:,:,i),background, imalpha(:,:,i) ,0, ax1, tileset.clims, 0, tileset.thresh, custom_map); 
+   plot_framesoverlaid(imtiles(:,:,i),background, imalpha(:,:,i) ,0, ax(i), tileset.clims, 0, tileset.thresh, custom_map); 
    tit= strcat(num2str(datatime(timeindx(i))), 'ms');
    title(tit, 'fontsize', 6)
    set(gca,'XColor', 'none','YColor','none')
-   ax1.Title.String = tit; 
+   ax(i).Title.String = tit; 
+   axis image
    
-   i = 2; 
-   ax2 = subplot(nrows, ncols, i); 
-   plot_framesoverlaid(imtiles(:,:,i),background, imalpha(:,:,i) ,0, ax2, tileset.clims, 0, tileset.thresh, custom_map); 
-   tit= strcat(num2str(datatime(timeindx(i))), 'ms');
-   title(tit, 'fontsize', 6)
-   set(gca,'XColor', 'none','YColor','none')
-   ax2.Title.String = tit; 
-  
-   i = 3; 
-   ax3 = subplot(nrows, ncols, i); 
-   plot_framesoverlaid(imtiles(:,:,i),background, imalpha(:,:,i) ,0, ax3, tileset.clims, 0, tileset.thresh, custom_map); 
-   tit= strcat(num2str(datatime(timeindx(i))), 'ms');
-   title(tit, 'fontsize', 6)
-   set(gca,'XColor', 'none','YColor','none')
-   ax3.Title.String = tit; 
+    end
+    
+    %%% TODO: ask for point to extract wave from, plot it in the last frame
+    %%% and extract the waves
+    
+% GET POINT FOR WAVES
 
-   i = 4; 
-   ax4 = subplot(nrows, ncols, i); 
-   plot_framesoverlaid(imtiles(:,:,i),background, imalpha(:,:,i) ,0, ax4, tileset.clims, 0, tileset.thresh, custom_map); 
-   tit= strcat(num2str(datatime(timeindx(i))), 'ms');
-   title(tit, 'fontsize', 6)
-   set(gca,'XColor', 'none','YColor','none')
-   ax4.Title.String = tit; 
-  
-   i = 5; 
-   ax5 = subplot(nrows, ncols, i); 
-   plot_framesoverlaid(imtiles(:,:,i),background, imalpha(:,:,i) ,0, ax5, tileset.clims, 0, tileset.thresh, custom_map); 
-   tit= strcat(num2str(datatime(timeindx(i))), 'ms');
-   title(tit, 'fontsize', 6)
-   set(gca,'XColor', 'none','YColor','none')
-   ax5.Title.String = tit; 
+for ii = 1:npoints
+    title(['select one point and Press any key when it is ready' ])
+display(strcat('select point nº:', num2str(ii), '-and Press any key to continue. Once you have drawn it, before pressing enter, you can adjust the point position by simply dragging '))
 
-   i = 6; 
-   ax6 = subplot(nrows, ncols, i); 
-   plot_framesoverlaid(imtiles(:,:,i),background, imalpha(:,:,i) ,0, ax6, tileset.clims, 0, tileset.thresh, custom_map); 
-   tit= strcat(num2str(datatime(timeindx(i))), 'ms');
-   title(tit, 'fontsize', 6)
-   set(gca,'XColor', 'none','YColor','none')
-   ax6.Title.String = tit; 
+% Get the initial center position from the user
+[x, y] = ginput(1);
 
+% Draw a cicle, and allow the user to change the position
+drawncircle = drawcircle('Center', [x, y], 'InteractionsAllowed', 'translate', 'Radius', r, 'LineWidth', 1.5, 'color',pointcolors(ii,:) );
+pause
+mask = createMask(drawncircle,xdim,ydim);
+
+% save in output
+centreO(ii,:) = drawncircle.Center;
+mask0(ii,:,:) = createMask(drawncircle,xdim,ydim);
+
+    viscircles([x y],r, 'color',pointcolors(ii,:)); 
 
 end
 
-%% Created: 16/02/21 (from Gent1)
+% EXTRACT WAVE AND PLOT IN TH ELAST AXIS
+ax(5) = subplot(nrows, ncols, 5);
+hold on
+
+for nwave = 1:npoints
+    roimask = squeeze(mask0(nwave,:,:));
+    wave  = roi_TSave(moviedata,roimask);
+    plot(times(2:end), wave, 'color', pointcolors(nwave,:));
+    clear wave roimask
+end
+    
+
+end
+
+%% Created:24/07/21 (from function plot_tilemovie12frames)
+
 function  plot_framesoverlaid(imAct, imBack, logicalpha, plotnow, axH, act_clim, plot_cbar, thresh, custom_map)
 % INPUT 
 % 'imAct' - image to display in colors
@@ -168,6 +174,7 @@ ax1 = axes;
 imagesc(imBack);
 colormap(ax1,'bone');
 ax1.Visible = 'off';
+axis image
 
 ax2 = axes;
 % imagesc(ax2,imAct,'alphadata',imAct>thresh);
@@ -181,6 +188,8 @@ imagesc(ax2,imAct,'alphadata',logicalpha);
     
 caxis(ax2, act_clim);
 ax2.Visible = 'off';
+axis image
+
 if plot_cbar
 colorbar;
 end
@@ -192,5 +201,5 @@ linkprop([axH ax1 ax2],'Position');
 
 end
 
-%% Created  07/02/21(Copied from Gent code)
-% Updated: 19/02/21 - 'change plot_framesoverlaid': BV colormap
+%% Created  25/07/21 
+% Updated: 

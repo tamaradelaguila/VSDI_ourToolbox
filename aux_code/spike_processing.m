@@ -1,10 +1,10 @@
-%% Load spike matfile
+%% Load pike matfile
 % Previous steps in 'spike_export.txt'
 
 clear
 
 user_settings
-nfish =8;
+nfish =12;
 VSDI = TORus('load',nfish); 
 
 pathspike= '/home/tamara/Documents/MATLAB/VSDI/TORus/data/dataspike';
@@ -49,11 +49,11 @@ clear spikes stim
 %% MATCH - GET REFERENCE TIMES AND ESTIMATED ROtimes correspondence
 
 % MANUALLY ADD REFERENCE
-spike.reftime.trial = '008A';
-spike.reftime.trialidx = 9;
-spike.reftime.BVtime= '16:28:12'; %from VSDI.list (BVfile time of creation)
-spike.reftime.spiketime = '16:10:17'; %from spike (setting cursor)
-spike.reftime.spike0 = '16:08:04';  %from spike as well
+spike.reftime.trial = '006A';%trial to reference from
+spike.reftime.trialidx = 7 ;%corresponding BrainVision index
+spike.reftime.BVtime=  '14:20:04'; %from VSDI.list (BVfile time of creation)
+spike.reftime.spiketime = '14:02:08'; %time frmo the from spike (setting cursor)
+spike.reftime.spike0 = '14:00:22';  %starting time from spike as well
 
 % ... and turn into 'duration' vectors
 spike.reftime.BVtime = duration(spike.reftime.BVtime, 'Format','hh:mm:ss');
@@ -109,11 +109,11 @@ end
         disp('"there is no odd iti"')
     end
     
-    % 2.1. Manually get the new time and correct the VSDI structure
-    correctedtime = '17:05:15'; % @SET get from spike file (spike-referenced); the spike file is the most accurate because the BV time is the time after writing the file and can vary
-    correctedtime = duration(correctedtime, 'Format', 'hh:mm:ss'); 
-    newtime = correctedtime + spike.reftime.gap  % time into BV-reference; copy and manually substitute into VSDI.trialtime.hour (as string) -store old time into VSDI.trialtime.old_hour
-
+%     % 2.1. Manually get the new time and correct the VSDI structure
+%     correctedtime = '17:05:15'; % @SET get from spike file (spike-referenced); the spike file is the most accurate because the BV time is the time after writing the file and can vary
+%     correctedtime = duration(correctedtime, 'Format', 'hh:mm:ss'); 
+%     newtime = correctedtime + spike.reftime.gap  % time into BV-reference; copy and manually substitute into VSDI.trialtime.hour (as string) -store old time into VSDI.trialtime.old_hour
+% 
     TORus('save', VSDI) 
 
 % 3. AND SUBSTITUTE THE CORRECT VALUES INTO THE BVtimes_sec
@@ -165,9 +165,9 @@ end
             end
             
     if ~isempty(check_idx)
-        disp(['"check matched trial with idx:"' makeRow(check_idx)])
+        disp(['check matched trial with idx (from the spike.match):' num2str( makeRow(check_idx))])
     else
-        disp('"there is no repeated consecutive trial or in reversed order"')
+        disp('there is no repeated consecutive trial or in reversed order')
     end
 
 

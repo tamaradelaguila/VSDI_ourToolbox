@@ -1,7 +1,11 @@
 function [cropped] = roi_crop(movie3D, cropmask)
+% [cropped] = roi_crop(movie3D, cropmask) applies a cropmask to every frame
+% from the input movie
+
 %INPUT:
 % 'movie3D': dimensions: (x*y*frame)
 % 'cropmask': 2D logic array (mask) to apply at each movies frame
+
 
 % APPLY CROPMASK TO EACH MOVIE FRAME
 nframe = size(movie3D, 3);

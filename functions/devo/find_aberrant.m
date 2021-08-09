@@ -1,7 +1,7 @@
 function [reject_idx]  = find_aberrant(GS, cond_idx, std_crit, plot_on)
 
 % Find idx of trials to reject based on the criterion of Global Signal
-% Substraction.
+% difference.
 
 % INPUT: 
 %  'GS': 2d array (timepoints, trials). Contains the whole-brain
