@@ -1,18 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Nov  1 16:46:26 2020
-
-@author: Tamara del Águila from
-"""
-
-
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Oct  8 14:37:00 2020
-
-@author: User
-"""
-
 from argparse import ArgumentParser
 import pickle
 from os.path import join
@@ -58,7 +43,7 @@ if __name__ == "__main__":
     imsave(create_image_path(args.out_path, "reference_image"), reference_image)
     original_data = {"reference_image": reference_image, "images": []}
 
-    for i in range(1, frame_num): # 0 - ref. img, 1 - (without zero skip)
+    for i in range(1, frame_num): # 0 - ref. img
         image = read_image(i, raw_data) + reference_image
         original_data["images"].append(image)
         if args.save_all_imgs:
@@ -68,3 +53,4 @@ if __name__ == "__main__":
 
     with open(create_image_path(args.out_path, "extracted_data", ext=".pck"), "wb") as out_file:
         pickle.dump(original_data, out_file, protocol=4)
+

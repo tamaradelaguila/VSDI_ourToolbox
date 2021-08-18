@@ -1,4 +1,4 @@
-# AUTOMATIC EXTRACTION USING PREDRAG'S FUNCTION
+# AUTOMATIC EXTRACTION OF MAT STRUCTURES FROM .DML FILES
 """
 Created on Sun Dec 20 23:27:20 2020
 
@@ -19,9 +19,9 @@ filelist =[]
 for dmlfile in listdir:
     if dmlfile.endswith(".dml"):
         filelist.append (os.path.join(sourcepath, dmlfile))
-    
+
 # load python input file and output path
-function =os.path.join(rootpath,'functions','external','python2','extract_images3.py')
+function =os.path.join(rootpath,'functions','external','micam_data_extraction','extract_images.py')
 salida=  output_path
 
 
@@ -34,7 +34,7 @@ for file in filelist:
     origen =  origen.replace(os.sep, '/')
     salida = salida.replace(os.sep, '/')
     variables = origen + ' ' + salida
-    
+
     # Apply function to extract array
     runfile(function, args=variables)
 
