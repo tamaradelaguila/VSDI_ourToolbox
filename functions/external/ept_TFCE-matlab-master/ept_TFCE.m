@@ -1,5 +1,6 @@
-%% EEG Permutation Test (egt) using Threshold-Free Cluster Enhancement 
+%% EEG Permutation Test (egt) using Threshold-Free Cluster Enhancement
 % Copyright(C) 2012  Armand Mensen (14.12.2010)
+% Modified by: Tamara del Aguila Puntas (03.11.2020 ) - small adjustements to fit my data format
 
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
@@ -15,30 +16,30 @@
 % [Description]
 % This tests initially computes a T-Value for each channel and sample
 % These values are then enhanced or reduced depending on the size of
-% the T-value and the size of the cluster the channel belongs to at 
+% the T-value and the size of the cluster the channel belongs to at
 % various thresholds...
-%     
+%
 % TFCE is essentially the sum of the clusters to the power of 0.5 multiplied
 % by the height of the current threshold squared
-% 
+%
 % [Input]
 % Participant data should be organised into two factors
 %     e.g. Dataset 1 is controls while Dataset 2 is patients
-% Electrode locations file created using eeglab is required to 
+% Electrode locations file created using eeglab is required to
 % calculate channel neighbours
-% 
+%
 % Analysis Types
 % i = independent sample T-Test
 % d = dependent (paired) sample T-Test
 % o = one-sample T-test
 % c = Pearson's correlation (r)
-% 
+%
 % This Summary file should be a "Participants x Channels x Samples" variable
 % - Participants should be in order of the group they belong to...
 % - Channels must be in the same order as the corresponding electrodes file
 % - Samples should be in chronological order
 % - Values in the variable correspond to the mV averaged ERP data
-% 
+%
 % [Output]
 % - Info Structure
 % - Data Structure
@@ -60,7 +61,7 @@
 % 22.01.2013
 % Corrected bug in correlation analysis (check for type 'r' instead of 'c')
 % Eliminated the use of the shuffle function for correlation
-% 
+%
 % 06.11.2012
 % Included a one-sample test and some error handling
 %
@@ -75,13 +76,13 @@
 % 03.01.2011
 % - Calculated significance power and displays graph
 %       - Significance power is the inverse of the p-value squared...
-% 
+%
 % 10.03.2011
 % - Now a function that can be called from the command line
 %
 % 24.05.2011
 % - Added random stream dependence on the clock
-% 
+%
 % 12.07.2011
 % - Adapted to loading the two summary files to be compared
 % - Uses new modified version of the channel neighbours algorithm
@@ -94,25 +95,27 @@
 
 %  function Results = ept_TFCE(DataFile1, DataFile2, ElecFile, varargin)
 
-% assignin('base', 'varargin', varargin); 
+% assignin('base', 'varargin', varargin);
+
+
 %% Set Defaults
- 
+
  E_H        = [0.66 2]; % default parameters of E and H
  nPerm      = 10000; % default number of permutations
  rSample    = 166.66; % default assumed sampling rate (not used in calculation but only for result viewer)
  saveName   = ['ept_Results_', date, '.mat'];
 %  type       = 'i'; % i = independent sample T-Test; d = dependent (paired) sample T-Test; c = Pearson's correlation
  plots      = 0; % change to '1' to show significance plots after calculation
- flag_ft    = 1; 
+ flag_ft    = 1;
  flag_tfce  = 1;
  flag_save  = 0;
  ChN = [];
- 
+
 % Set random stream depending on the clock value (unpredictable).
 % myRand = RandStream('mt19937ar','Seed',sum(100*clock));
 % RandStream.setGlobalStream(myRand);
  rng(25)
- 
+
 % % Process Secondary Arguments
 % if nargin > 2
 %   if (round(nargin/2) == nargin/2)
@@ -125,7 +128,7 @@
 %       error('Flag arguments must be strings')
 %     end
 %     Param = lower(Param);
-%     
+%
 %     switch Param
 %         case 'e_h'
 %             E_H         = Value;
@@ -157,22 +160,22 @@
 
 %% Process Arguments
 % if nargin < 1
-%     
+%
 %     prompt = {'Number of Permutations', 'Sampling Rate', '(i)n(d)ependent / (c)orrelation?', 'Results Name', 'Plots? 0=No, 1=Yes'};
 %     dlg_title = 'Define Parameters';
 %     def = {num2str(nPerm), num2str(rSample), type, saveName, num2str(plots)};
 %     noGr = inputdlg(prompt, dlg_title,1,def);
-%     
+%
 %     if isempty(noGr)
 %         error('Analysis cancelled')
 %     end
-%     
+%
 %     nPerm      = str2double(noGr{1});  % number of permutations
 %     rSample    = str2double(noGr{2});  % sampling rate
 %     type       = noGr{3};
 %     saveName   = noGr{4};
 %     plots      = str2double(noGr{5});
-%     
+%
 %     if type == 'i' || type == 'd'
 %         [DataFile{1}, DataPath{1}] = uigetfile('', 'Please Select the first EEG Summary File', 'MultiSelect', 'off');
 %         [DataFile{2}, DataPath{2}] = uigetfile('', 'Please Select the second EEG Summary File', 'MultiSelect', 'off');
@@ -182,16 +185,16 @@
 %     elseif type == 'o'
 %         [DataFile{1}, DataPath{1}] = uigetfile('', 'Please Select the EEG Summary File', 'MultiSelect', 'off');
 %     end
-%     
+%
 %     if DataFile{1} == 0
 %         fprintf(1, 'Returning: No Data File Selected... \n');
 %         return;
 %     end
-%     
+%
 %     FullFileName1 = strcat(DataPath{1}, DataFile{1});
 %     Data{1,1}     = load (FullFileName1);
 %     Data{1,1}     = Data{1}.Summary;
-    
+
     % Error handling for non-onesample tests...
 %     if type ~= 'o'
 %         FullFileName2 = strcat(DataPath{2}, DataFile{2});
@@ -199,7 +202,7 @@
 %     else
 %         Data{2,1}     = zeros(size(Data{1}));
 % %     end
-%     
+%
 %     % Error handling for special behavioural data exception
 %     if type == 'i' || type == 'd'
 %         Data{2,1}	= Data{2}.Summary;
@@ -207,36 +210,36 @@
 %     elseif type == 'c'
 %         Data{2}     = Data{2}.Behavioural;
 %     end
-%     
+%
 %     % Load the electrode file...
 %     [ElecFile, ElecPath] = uigetfile('', 'Please Select the Electrodes File');
 %     FullElecName = strcat(ElecPath, ElecFile);
 %     load (FullElecName);
-%     
+%
 % elseif nargin > 2;
-%     
+%
 % %     % check if file or variable entered as data
 % %     if isa(DataFile1, 'char')
 % %         % Not a lot of error checking done here yet.
 % %         DataFile{1} = DataFile1;
 % %         DataFile{2} = DataFile2;
-% %         
+% %
 % %         Data{1}       = load (DataFile1, 'Summary');
 % %         Data{1}       = Data{1}.Summary;
 % %         Data{2}       = load (DataFile2);
-%         
+%
 % %         if type == 'i' || type == 'd'
 % % %             Data{2} 	= Data{2}.Summary;
 % %             aData = [Data{1};Data{2}];
 % %         elseif type == 'c'
 % %             Data{2}     = Data{2}.Behavioural;
 % %         end
-%         
+%
 % %     elseif isa(DataFile1, 'double')
 % %         DataFile{1, 2} = '';
 % %         Data{1} = DataFile1;
 % %         Data{2} = DataFile2;
-% 
+%
 % %     elseif isa(DataFile1, 'single')
 % %         fprintf(1, 'warning: single data converted to double for analysis');
 % %         DataFile{1, 2} = '';
@@ -244,26 +247,26 @@
 % %         Data{2} = double(DataFile2);
 % %         if type == 'i' || type == 'd'
 % %             aData = [Data{1}; Data{2}];
-% %         end 
-%         
+% %         end
+%
 % %     else
 % %         fprintf(1, 'error: could not recognise data format (possibly single) \n');
 % %     end
-%     
+%
 %     if isa(ElecFile, 'char')
 %         e_loc         = load (ElecFile);
 %         e_loc         = e_loc.e_loc;
 %     else
 %         e_loc = ElecFile;
 %     end
-%     
+%
 % end
 
 % (tam: i extracted this from the loop above that has been commented)
         if type == 'i' || type == 'd'
             aData = [Data{1}; Data{2}];
         end
-        
+
 
 nA   = size(Data{1},1);
 nB   = size(Data{2},1);
@@ -317,33 +320,33 @@ display('Calculating Actual Differences...')
 
 % Calculate different T-values for independent and dependent groups
 if type == 'i'
-    
+
     T_Obs = (mean(Data{1})-mean(Data{2}))./sqrt(var(Data{1})/nA+var(Data{2})/nB);
     T_Obs = squeeze(T_Obs);
-    
+
 elseif type == 'd' || type == 'o'
-    
+
     D    = Data{1}-Data{2};
-    
+
     T_Obs = mean(D,1)./(std(D)./sqrt(nA));
     T_Obs = squeeze(T_Obs);
-    
+
 elseif type == 'c'
     % Define "condition" function for correlation calculation
     condition = @(x) (x-mean(x))./std(x);
-    
+
     % calculate the size of the data
     data_size = size(Data{1}); data_size(1) = [];
-    
+
     % repmat the correlation data to match the data size
     behavior_repeated = repmat(Data{2}, [1, data_size]);
-    
+
     % calculate the correlation coefficient (r) but call it T_Obs for consistency
     temp_observed = [reshape(condition(Data{1}), nA, [])' ...
         * reshape(condition(behavior_repeated), nA, [])] ...
         / reshape(sum(condition(Data{1}).^2), 1, []);
     T_Obs = reshape(temp_observed, data_size);
-    
+
 end
 
 % check for non-zero T-values (will crash TFCE)
@@ -367,7 +370,7 @@ if flag_tfce
             TFCE_Obs = TFCE_Obs(:, :, 1);
         end
     end
-    
+
     if ndims(T_Obs) == 3;
         TFCE_Obs = ept_mex_TFCE3D(T_Obs, ChN, E_H);
     end
@@ -381,21 +384,21 @@ display('Done')
 display('Calculating Permutations...')
 
     for i   = 1:nPerm           % Look into parfor for parallel computing
-        
+
             if type == 'i' %two sample independent T-test
                 r_perm      = randperm(nA+nB); % Consider using Shuffle mex here (50-85% faster)...
-                
+
                 if ismatrix(T_Obs);
-                    nData       = aData(r_perm,:,:); 
+                    nData       = aData(r_perm,:,:);
                     sData{1}    = nData(1:nA,:,:); sData{2}= nData((nA+1):(nA+nB),:,:);
                 else
-                    nData       = aData(r_perm,:,:,:); 
+                    nData       = aData(r_perm,:,:,:);
                     sData{1}    = nData(1:nA,:,:,:); sData{2}= nData((nA+1):(nA+nB),:,:,:);
-                end 
-              
+                end
+
                 T_Perm = (mean(sData{1})-mean(sData{2}))./sqrt(var(sData{1})/nA+var(sData{2})/nB);
-                T_Perm = squeeze(T_Perm);   
-                
+                T_Perm = squeeze(T_Perm);
+
             elseif type == 'd' || type == 'o' %one-sample T-test
                 Signs =[-1,1];
                 SignSwitch = randsample(Signs,size(D,1),'true')';
@@ -403,31 +406,31 @@ display('Calculating Permutations...')
                    SignSwitch = repmat(SignSwitch, [1 nCh nS]);
                 else
                    SignSwitch = repmat(SignSwitch, [1 nCh nF nS]);
-                end 
-                        
+                end
+
                 nData = SignSwitch.*D;
-        
+
                 T_Perm = mean(nData,1)./(std(nData)./sqrt(size(nData,1)));
                 T_Perm = squeeze(T_Perm);
-                
-        
+
+
             elseif type == 'c' %correlation analysis
-                
+
                 % repmat the correlation data to match the data size
                 behavior_perm = Data{2}(randperm(nB));
                 behavior_repeated = repmat(behavior_perm, [1, data_size]);
-                
+
                 % calculate the correlation coefficient (r) but call it T_Perm for consistency
                 temp_observed = [reshape(condition(Data{1}), nA, [])' ...
                     * reshape(condition(behavior_repeated), nA, [])] ...
                     / reshape(sum(condition(Data{1}).^2), 1, []);
                 T_Perm = reshape(temp_observed, data_size);
-                
+
 
             else
                 error('Unrecognised analysis-type; see help file for valid inputs')
             end
-            
+
         % TFCE transformation...
         if flag_tfce
             if ismatrix(T_Perm)
@@ -444,23 +447,23 @@ display('Calculating Permutations...')
                     TFCE_Perm = TFCE_Perm(:, :, 1);
                 end
             end
-            
+
             if ndims(T_Perm) == 3;
                 TFCE_Perm = ept_mex_TFCE3D(T_Perm, ChN, E_H);
             end
-            
+
         else
             TFCE_Perm = T_Perm;
         end
-        
+
         maxTFCE(i) = max(abs(TFCE_Perm(:)));       % stores the maximum absolute value
-        
+
         progressbar(i/nPerm); %Progress Bar
-       
+
     end
 
 display('Done')
-    
+
 %% Calculating the p value from the permutation distribution
 
 display('Calculating P-Values and Saving...')
@@ -496,12 +499,12 @@ Info.Parameters.GroupSizes  = [nA, nB];
 % if exist('fSample', 'var')
 %     Info.Parameters.fSample = fSample;
 % end
-% 
+%
 % Info.Electrodes.e_loc       = e_loc;
 % Info.Electrodes.ChannelNeighbours = ChN;
-% 
+%
 % Info.DataFiles              = DataFile;
-Results.diffmap             = (mean(Data{1})-mean(Data{2})); % added to the function 
+Results.diffmap             = (mean(Data{1})-mean(Data{2})); % added to the function
 Results.Obs                 = T_Obs;
 Results.TFCE_Obs            = TFCE_Obs;
 Results.maxTFCE             = sort(maxTFCE);
