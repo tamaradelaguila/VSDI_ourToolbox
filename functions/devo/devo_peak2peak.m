@@ -293,8 +293,15 @@ end
 %--------------------------------------
     l1= dsearchn(timebase,wind.wmean(1)); 
     l2 = dsearchn(timebase,wind.wmean(end));
-    output.wmean = mean(wave(l1:l2))- mean(wave(b1:b2)); %mean minus baseline
-    clear l1 l2
+    waveW = wave(l1:l2);
+    waveB = wave(b1:b2);%baseline
+    output.wmean = mean(waveW)- mean(waveB); %mean minus baseline
+    
+    
+%--------------------------------------
+% WINDOWED MEAN (mean in window minus mean of the baseline)
+%--------------------------------------
+    output.wmeanslope = mean(diff(waveW)) -  mean(diff(waveB)) ; 
 
 %.................................................
 %.................................................
@@ -339,5 +346,6 @@ end
 end
 
 %% Created 18/05/2021 (from Ugent ana_erps_peak2peak.m)
-% Updated: 01/06/21 
-% Updated: 30/07/21 - include 'wmean' output
+% Updates history:
+% --- 30/07/21 - include 'wmean' output
+% --- 18/08/21 - include 'wmeanslope' output (using the same wmean window)
