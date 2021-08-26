@@ -1,3 +1,6 @@
 [submodule "functions/external/micam_data_extraction"]
 	path = functions/external/micam_data_extraction
 	url = https://github.com/zivadinac/micam_data_extraction
+[submodule "functions/external/TFCE-perm/ept_TFCE-matlab"]
+	path = functions/external/TFCE-perm/ept_TFCE-matlab
+	url = https://github.com/Mensen/ept_TFCE-matlab/
