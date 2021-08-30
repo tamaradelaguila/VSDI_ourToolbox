@@ -1,4 +1,4 @@
-function [] = devo_plot_tiles_4frames_nwaves(movieset, tileset, waveset)
+function [] = devo_plot_tiles_4frames_anatomicalwaves(movieset, tileset, waveset)
 % [] = plot_tilemovie(moviedata, times, tileset, custom_map, npoints, r)% IT plots 4 tiles and asks for npoints to plot
 
 %% INPUTS:
@@ -41,9 +41,9 @@ times= movieset.times;
 datatime = times;
 moviedata = moviedata(:,:,1:end-1);
 
-coord = waveset.coord;
-r= waveset.r;
-npoints = size(coord,1);
+coordcells = waveset.coord;
+mask= waveset.mask;
+npoints = size(coordcells,1);
 
 
 % n� samples
@@ -91,11 +91,12 @@ axis image
 
 set(ax(i),'visible', 'off'); %set the axis invisible (the white square behind)
 set(findall(gca, 'type', 'text'), 'visible', 'on') %keeps the title visible
-
+hold on
 
 for ii = 1 :npoints
-    drawncircle = drawcircle('Center', coord(ii,:), 'Radius', r,  'InteractionsAllowed', 'none','LineWidth', 1.5, 'color',pointcolors(ii,:) );
-    mask(ii,:,:) = createMask(drawncircle,xdim,ydim);
+    coord = coordcells{ii};
+    plot(coord(:,1), coord(:,2), 'color', pointcolors(ii,:) , 'LineWidth', 1); hold on
+ 
     %     viscircles(coord(ii,:),r, 'color',pointcolors(ii,:));
 end %ii
 
@@ -135,7 +136,7 @@ ax(5) = subplot(nrows, ncols, 5);
 hold on
 
 for nwave = 1:npoints
-    roimask = squeeze(mask(nwave,:,:));
+    roimask = squeeze(mask(:,:,nwave));
     wave  = roi_TSave(moviedata,roimask);
     wavemax(nwave) = max(wave);
     plot(times(2:end), wave, 'color', pointcolors(nwave,:), 'linewidth', 1.5);
@@ -144,12 +145,12 @@ end
 
 
 pbaspect([ydim xdim 1]) %fit the proportions of the plot to the image ratio
-    yl = waveset.ylim;
+    yl = ylim;
     down= yl(1); up=yl(2); 
     patch ([starttime endtime, endtime, starttime],[down down up up],'k','FaceAlpha',.3, 'LineStyle', 'none')
     xlim(waveset.xlim)
-    ylim(yl)
-    
+
+
 end
 
 %% Created:24/07/21 (from function plot_tilemovie12frames)
@@ -260,5 +261,5 @@ linkprop([axH ax1 ax2],'Position');
 
 end
 
-%% Created  25/07/21 (Adapted from 12tiles)
+%% Created  30/08/21 (Adapted from devo_plot_tiles_4frames_nwaves)
 % Updated:
