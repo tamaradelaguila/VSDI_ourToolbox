@@ -16,7 +16,7 @@ else
 end
 % End of input control
 
-ax1 = axes
+ax1 = axes;
 imagesc(backgr); colormap('bone'); hold on
 axis image
 roicolors= roi_colors();
