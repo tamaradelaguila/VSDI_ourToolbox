@@ -7,8 +7,8 @@ function [outwave] = roi_TSave(Y,roimask)
 % OUTPUT: 'wave' of the ROI timeserie, that is the average value of all the pixels
 % in the ROI (roimask)
 
-Nframes= size(Y,3)-1; % substract last frame
-outwave = zeros(1, Nframes); % vector of length the nº of frames in data (Y) 
+Nframes= size(Y,3)-1; % substract last frame in case it is the background
+outwave = zeros(1, Nframes); % vector of length the nï¿½ of frames in data (Y) 
 
 for frame=1:Nframes
 
