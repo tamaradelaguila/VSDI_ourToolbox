@@ -1,4 +1,3 @@
-%% AUXILIARY FUNCTION
 function  plot_framesoverlaid2(imAct, imBack, logicalpha, plotnow, axH, act_clim, plot_cbar, thresh, custom_map)
 % INPUT
 % 'imAct' - image to display in colors
@@ -44,6 +43,13 @@ else
     colormode = 1;
 end
 
+if ~exist('tit')
+    tit= '';
+elseif isempty(tit)
+    tit= '';
+end
+
+
 % end of input control ------------------------
 if plotnow
     fig1 = figure;
@@ -66,7 +72,6 @@ if colormode == 1
 else
     colormap(ax2,polarmap());
 end
-
 caxis(ax2, act_clim);
 ax2.Visible = 'off';
 axis image
@@ -74,7 +79,7 @@ axis image
 if plot_cbar
     colorbar;
 end
-linkprop([axH ax1 ax2],'Position');
+linkprop([axH ax1 ax2],'Position', 'Visible');
 
 % if plotnow
 %    close (fig1)
