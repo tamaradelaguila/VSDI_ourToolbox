@@ -1,5 +1,6 @@
 function [output , fig] = devo_peak2peak(wave, timebase, wind, noise, method, plot_on, flag_on)
-%%  [output , fig] = devo_peak2peak(wave, timebase, wind, noise, method, plot_on, flag_on)
+
+%  [output , fig] = devo_peak2peak(wave, timebase, wind, noise, method, plot_on, flag_on)
 % the measures are returned in 'ms'
 
 
@@ -8,13 +9,15 @@ function [output , fig] = devo_peak2peak(wave, timebase, wind, noise, method, pl
 % 'timebase' = (VSDI.timebase). Time in ms with zero in the stimulus onset
 % 'wind' structure with fields:
 % 'wind.min', 'wind.max':  vectors with the windows in which to find the
-% minimum and maximum peak respectively
+    % minimum and maximum peak respectively (ms)
 % 'wind.movsum' = window that will be used as sliding window to get the
-% cummulative values (in method 'movsum'), and that will be used  to calculate the averaged peakvalue (in all
-% methods)
+    % cummulative values (in method 'movsum'), and that will be used  to calculate the averaged peakvalue (in all
+    % methods)
 % 'wind.baseline' to calculate peak_minus_base
 % 'wind.slope' - use to calculate slope_max
 % 'wind.wmean' - to get mean activity from
+% 'wind.risingthres' - for 'rising threshold' measure (threshold to set for
+	% the determination of the latency
 % 'method': 'movsum' or 'peakfind', depending on the function used to
 % find the peaks. Movsum is set as the default
 % 'plot_on'
@@ -43,6 +46,7 @@ function [output , fig] = devo_peak2peak(wave, timebase, wind, noise, method, pl
 % 'output.noisethresh' - %threshold used
 % 'output.slopemax
 % 'wmean' - mean in window
+% 'output.risingthresh' 
 
 % (if plot_on ==1) fig: figure of wave indicating
 % the window used to find the peaks in the analysis
@@ -104,6 +108,13 @@ if ~isfield(noise, 'SDfactor')
     if flag_on
         display(['DEFAULT noise SD factor set at:' num2str(noise.SDfactor)]);
     end
+end
+
+if ~isfield(wind, 'risingthresh')
+compute.risingthresh = 0;
+else  
+compute.risingthresh = 1;
+
 end
 
 
@@ -187,6 +198,12 @@ end
 tmin_ms =timebase (tmin);
 tmax_ms = timebase (tmax);
 
+%--------------------------------------
+% % PEAK LATENCY
+%--------------------------------------
+
+output.peaklatency = timebase(tmax);
+
 
 %--------------------------------------
 % % PEAK-TO-PEAK MEASURES
@@ -213,6 +230,7 @@ b2 = dsearchn(timebase,wind.baseline(end));
 
 output.peakminusbasel = valueMax - mean(wave(b1:b2));
 
+
 %--------------------------------------
 % % MAX SLOPE
 %--------------------------------------
@@ -227,11 +245,12 @@ if numel(diffwave)<  movave/2 %if the distance between 0 and tmax is not the hal
 else
     output.slopemax = max(movmean(diffwave, movave)); %it uses 'movwin', that is, the same precision as the peak-finder part of the function
 end
+
 %--------------------------------------
 % % ONSET_NOISE: MS TO REACH NOISE-THRESHOLD
 %--------------------------------------
 
-noiseSD = std(wave(b1:b2));
+noiseSD = std(wave(b1:b2)); %b1-b2 is the baseline
 noisemean = mean(wave(b1:b2));
 
 idx0 = dsearchn(timebase,0);
@@ -255,11 +274,12 @@ end
 %--------------------------------------
 % 30% ONSET LATENCY
 %--------------------------------------
-
 %  define the window to find the time of the 30%amplitude latency between
-% the tmin and tmax (in indexes) and then transform as well into ms
-range_latency = [tmin tmax];
-movlat = movmean(wave(range_latency(1):range_latency(2)),movwin);
+% the tmin and tmax (in indexes), or in the range where the max-peak is found, and then transform as well into ms
+range_latency = range_max(1):range_max(2);
+% range_latency = [tmin tmax];
+
+movlat = movmean(wave(range_latency),movwin);
 
 %drag the wave into the positive values to avoid confusion if the values are
 %negative:
@@ -280,15 +300,6 @@ else
 end
 
 %--------------------------------------
-% FIND Vmax
-% in the whole window of analysis: [wind.min wind.max])
-%--------------------------------------
-% vpos = diff( erp(range_neg(1):range_pos(2)));
-% mov_vpos = movmean(vpos,[2 2]);
-% [vmax,vmax_i] = max(mov_vpos);
-% vmax_i = tmin+range_neg(1)-1; % re-reference to the whole vector
-
-%--------------------------------------
 % WINDOWED MEAN (mean in window minus mean of the baseline)
 %--------------------------------------
     l1= dsearchn(timebase,wind.wmean(1)); 
@@ -302,6 +313,41 @@ end
 % WINDOWED MEAN (mean in window minus mean of the baseline)
 %--------------------------------------
     output.wmeanslope = mean(diff(waveW)) -  mean(diff(waveB)) ; 
+
+%--------------------------------------
+%  RISING THRESHOLD %%%%%%%%%%%%%%%%%%%%%%%%%% DEVO 
+%--------------------------------------
+% latency to rise above a given threshold, to be found only in the window
+% used to find the peak
+
+if compute.risingthresh == 1
+    
+    wavepost = wave(range_max(1):range_max(2)); %find the threshold-rising moment in the same window in which the peak is found
+    movlat = movmean(wavepost,movwin);
+    
+    %drag the wave into the positive values to avoid confusion if the values are
+    %negative:
+    movlat_drag = movlat + abs(min(movlat));
+    threshval_drag = wind.risingthresh +  abs(min(movlat));
+    idxabove = movlat_drag >  threshval_drag;% 't' times in which the level is reached
+    framesabove = 10;
+    cumidx  = movsum(idxabove,framesabove);
+    t = find(cumidx==framesabove, 1, 'first'); % time in which the wave has ben above the threshold for 10frames
+    t = t - (framesabove-1);
+    t = t + range_max(1)-1; % turn local index into wave-referenced
+    
+    % if isempty(t30); t30 = length(timebase);end %if there is no time in which the threshold is reach, we set it to the last frame
+    
+    t_ms = timebase(t);
+    
+    if isempty(t_ms)
+        output.risingthreshlat = NaN; %in ms
+    else
+        output.risingthreshlat = t_ms; %in ms
+    end
+end % if compute
+
+
 
 %.................................................
 %.................................................
@@ -349,3 +395,6 @@ end
 % Updates history:
 % --- 30/07/21 - include 'wmean' output
 % --- 18/08/21 - include 'wmeanslope' output (using the same wmean window)
+% --- 20/10/21 - include new method 'risingthreshold'
+% --- 22/10/21 - the 30%latency os to be found in the same window as the
+% max-peak
