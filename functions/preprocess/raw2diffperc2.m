@@ -1,4 +1,4 @@
-function [diffpdata] = raw2diffperc2(raw3Dmatrix, baseframes)
+function [diffpdata, F0] = raw2diffperc2(raw3Dmatrix, baseframes)
 %RAW (absolute intensity) MOVIES TO DIFFERENTIAL PERCENT VALUE
 %-[100*(F-F0)/F0] MOVIES, BEING F0 THE MEAN OF THE BASERANGE FRAMES (idx)
 
