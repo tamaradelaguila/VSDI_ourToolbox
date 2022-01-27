@@ -1,4 +1,4 @@
-function [registmov] = register_wrap(rawmov, ref_frame,selected_trials)
+function [registmov] = register_wrap(rawmov, ref_frame, selected_trials)
 % Performs registration by 'monomodal' method
 
 % INPUT
